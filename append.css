@@ -1,0 +1,58 @@
+
+/* Marquee Slider */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #ffffff;
+  padding: 10px 0;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.marquee-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 80px;
+  padding-left: 80px;
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.marquee-icon {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.marquee-text {
+  font-size: 24px;
+  font-weight: 400;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .marquee-text {
+    font-size: 18px;
+  }
+  .marquee-icon {
+    width: 25px;
+    height: 25px;
+  }
+  .marquee-container {
+    padding: 15px 0;
+  }
+}

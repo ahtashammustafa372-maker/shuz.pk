@@ -1,0 +1,156 @@
+
+/* Slide Product Card */
+.slide-product-card {
+  border: 1px solid #e84e4e;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.slide-product-media {
+  position: relative;
+  background-color: #e6e0f8; /* Light purple background */
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+}
+
+/* Watermark text behind the shoe */
+.slide-product-media::before {
+  content: 'JUTAY';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.4);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.slide-product-image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.slide-product-card:hover .slide-product-image {
+  transform: scale(1.05);
+}
+
+.slide-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #e84e4e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  z-index: 5;
+}
+
+.slide-product-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.slide-product-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.slide-product-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.slide-price-sale {
+  color: #e84e4e;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.slide-price-compare {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 13px;
+}
+
+.slide-sizes {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.slide-size-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #555;
+  background: #fff;
+}
+
+.slide-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.slide-add-btn {
+  flex: 1;
+  background-color: #e84e4e;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.slide-add-btn:hover {
+  background-color: #d13d3d;
+}
+
+.slide-wishlist-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+}
+
+.slide-wishlist-btn svg {
+  width: 22px;
+  height: 22px;
+}
