@@ -8,8 +8,10 @@ import { ShieldAlert } from 'lucide-react';
 export default function AdminLayout({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const auth = localStorage.getItem('admin_auth');
@@ -19,14 +21,31 @@ export default function AdminLayout({ children }) {
     setIsChecking(false);
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === 'admin123') {
-      localStorage.setItem('admin_auth', 'true');
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('Invalid Admin Password. Hint: admin123');
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        localStorage.setItem('admin_auth', 'true');
+        localStorage.setItem('admin_user', JSON.stringify(data.user));
+        setIsAuthenticated(true);
+      } else {
+        setError(data.error || 'Invalid credentials');
+      }
+    } catch (err) {
+      setError('Failed to login. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,22 +61,34 @@ export default function AdminLayout({ children }) {
             <ShieldAlert size={30} style={{ color: 'var(--color-sale)' }} />
           </div>
           <h2 style={{ marginBottom: '10px', fontSize: '24px', fontWeight: '700' }}>Admin Login Required</h2>
-          <p style={{ color: '#71717a', fontSize: '14px', marginBottom: '30px' }}>Access restricted to store managers. Enter password below to unlock the professional dashboard.</p>
+          <p style={{ color: '#71717a', fontSize: '14px', marginBottom: '30px' }}>Access restricted to store managers. Enter your credentials to unlock the professional dashboard.</p>
           
           <form onSubmit={handleLogin}>
+            <div style={{ textAlign: 'left', marginBottom: '15px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: '#3f3f46' }}>Email</label>
+              <input 
+                type="email" 
+                style={{ width: '100%', padding: '12px', border: '1px solid #e4e4e7', borderRadius: '8px', fontSize: '15px' }}
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
             <div style={{ textAlign: 'left', marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: '#3f3f46' }}>Password</label>
               <input 
                 type="password" 
                 style={{ width: '100%', padding: '12px', border: '1px solid #e4e4e7', borderRadius: '8px', fontSize: '15px' }}
-                placeholder="Hint: admin123"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
             {error && <p style={{ color: 'var(--color-error)', fontSize: '13px', marginBottom: '15px', textAlign: 'left' }}>{error}</p>}
-            <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>
-              Unlock Dashboard
+            <button type="submit" disabled={isLoading} style={{ width: '100%', padding: '12px', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: isLoading ? 'not-allowed' : 'pointer' }}>
+              {isLoading ? 'Authenticating...' : 'Unlock Dashboard'}
             </button>
           </form>
         </div>
