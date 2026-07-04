@@ -15,7 +15,7 @@ function writeDB(data) {
 
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const data = await request.json();
     const db = readDB();
     
@@ -37,7 +37,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const db = readDB();
     
     if (!db.navbar) db.navbar = [];

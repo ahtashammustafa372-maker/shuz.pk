@@ -3,7 +3,7 @@ const db = require('../../../../lib/db');
 
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     
     if (!body.status) {
