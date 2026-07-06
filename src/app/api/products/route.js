@@ -63,6 +63,9 @@ export async function GET(request) {
       } else if (sort === 'date-descending') {
         products.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       }
+    } else {
+      // Default to showing newest products first
+      products.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
 
     return NextResponse.json(products);

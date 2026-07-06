@@ -109,7 +109,7 @@ export default function AdminProducts() {
         category_slug: newCategory,
         stock: parseInt(newStock),
         description: newDescription,
-        images: newImages ? newImages.split(/[\n,]+/).map(url => url.trim()).filter(Boolean) : ["/images/placeholder.png"],
+        images: newImages ? newImages.split(/[\n,]+/).map(url => url.trim()).filter(Boolean) : [],
         colors: newColors.split(',').map(c => c.trim()).filter(Boolean),
         sizes: newSizes.split(',').map(s => {
           const val = s.trim();
@@ -232,7 +232,7 @@ export default function AdminProducts() {
             ) : (
               filteredProducts.map(p => (
                 <tr key={p.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
-                  <td style={{ padding: '15px' }}><img src={p.images?.[0] || '/images/placeholder.png'} alt={p.title} style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} /></td>
+                  <td style={{ padding: '15px' }}><img src={p.images?.[0] || '/images/sneaker_black.jpg'} alt={p.title} style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} /></td>
                 <td style={{ padding: '15px' }}>
                   <strong style={{ display: 'block', color: '#18181b', fontSize: '14px' }}>{p.title}</strong>
                   <span style={{ fontSize: '12px', color: '#71717a' }}>Brand: {p.vendor}</span>
