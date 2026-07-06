@@ -18,6 +18,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [siblingProducts, setSiblingProducts] = useState([]);
   
   const [zoomStyle, setZoomStyle] = useState({ transformOrigin: 'center center', transform: 'scale(1)' });
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -60,6 +61,10 @@ export default function ProductDetailPage() {
             // Load recommendations (same category, excluding current product)
             const related = list.filter(p => p.category_slug === target.category_slug && p.id !== target.id);
             setRecommendedProducts(related.slice(0, 4));
+
+            // Find sibling products (same exact title) to act as color variants
+            const siblings = list.filter(p => p.title.toLowerCase() === target.title.toLowerCase());
+            setSiblingProducts(siblings);
           }
         }
       } catch (err) {
@@ -170,21 +175,41 @@ export default function ProductDetailPage() {
           <hr style={{ border: 'none', borderTop: '1px solid var(--color-border)', margin: '20px 0' }} />
 
           {/* Color Option Selector */}
-          {product.colors && product.colors.length > 0 && (
+          {siblingProducts.length > 1 ? (
             <div className="product-option-group">
-              <span className="product-option-label">Color: <span style={{ fontWeight: '500', color: 'var(--color-foreground-secondary)' }}>{selectedColor}</span></span>
+              <span className="product-option-label">Color: <span style={{ fontWeight: '500', color: 'var(--color-foreground-secondary)' }}>{product.colors[0] || 'Default'}</span></span>
               <div className="filter-color-list" style={{ marginTop: '5px' }}>
-                {product.colors.map(col => (
-                  <button
-                    key={col}
-                    className={`filter-color-btn ${selectedColor === col ? 'active' : ''}`}
-                    onClick={() => setSelectedColor(col)}
-                  >
-                    {col}
-                  </button>
-                ))}
+                {siblingProducts.map(sibling => {
+                   const siblingColor = sibling.colors && sibling.colors.length > 0 ? sibling.colors[0] : 'Default';
+                   return (
+                     <button
+                       key={sibling.id}
+                       className={`filter-color-btn ${sibling.id === product.id ? 'active' : ''}`}
+                       onClick={() => window.location.href = `/products/${sibling.slug}`}
+                     >
+                       {siblingColor}
+                     </button>
+                   );
+                })}
               </div>
             </div>
+          ) : (
+            product.colors && product.colors.length > 0 && (
+              <div className="product-option-group">
+                <span className="product-option-label">Color: <span style={{ fontWeight: '500', color: 'var(--color-foreground-secondary)' }}>{selectedColor}</span></span>
+                <div className="filter-color-list" style={{ marginTop: '5px' }}>
+                  {product.colors.map(col => (
+                    <button
+                      key={col}
+                      className={`filter-color-btn ${selectedColor === col ? 'active' : ''}`}
+                      onClick={() => setSelectedColor(col)}
+                    >
+                      {col}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
           )}
 
           {/* Size Option Selector & Inventory */}
