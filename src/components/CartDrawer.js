@@ -78,6 +78,7 @@ export default function CartDrawer() {
                       <button 
                         className="qty-btn"
                         onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
+                        disabled={item.maxStock !== undefined && item.maxStock !== null && item.quantity >= item.maxStock}
                       >
                         <Plus size={14} />
                       </button>

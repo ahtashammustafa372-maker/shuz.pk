@@ -33,16 +33,21 @@ export function CartProvider({ children }) {
     }
   }, [cartItems, isHydrated]);
 
-  const addToCart = (product, size, color, quantity = 1) => {
+  const addToCart = (product, size, color, quantity = 1, maxStock = null) => {
     setCartItems((prevItems) => {
       // Find if item with same id, size, and color already exists
       const existingIdx = prevItems.findIndex(
         (item) => item.id === product.id && item.size === size && item.color === color
       );
 
+      // Determine max stock to use
+      const stockLimit = maxStock !== null ? maxStock : (product.sizeStock && product.sizeStock[size] !== undefined ? product.sizeStock[size] : product.stock);
+
       if (existingIdx !== -1) {
         const newItems = [...prevItems];
-        newItems[existingIdx].quantity += quantity;
+        const newQty = newItems[existingIdx].quantity + quantity;
+        newItems[existingIdx].quantity = stockLimit !== undefined && stockLimit !== null ? Math.min(newQty, stockLimit) : newQty;
+        newItems[existingIdx].maxStock = stockLimit; // Update maxStock
         return newItems;
       } else {
         return [
@@ -56,7 +61,8 @@ export function CartProvider({ children }) {
             vendor: product.vendor,
             size,
             color,
-            quantity
+            quantity: stockLimit !== undefined && stockLimit !== null ? Math.min(quantity, stockLimit) : quantity,
+            maxStock: stockLimit
           }
         ];
       }
@@ -76,11 +82,13 @@ export function CartProvider({ children }) {
       return;
     }
     setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id && item.size === size && item.color === color
-          ? { ...item, quantity }
-          : item
-      )
+      prevItems.map((item) => {
+        if (item.id === id && item.size === size && item.color === color) {
+          const limitedQty = item.maxStock !== undefined && item.maxStock !== null ? Math.min(quantity, item.maxStock) : quantity;
+          return { ...item, quantity: limitedQty };
+        }
+        return item;
+      })
     );
   };
 

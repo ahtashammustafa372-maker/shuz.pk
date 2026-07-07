@@ -21,6 +21,20 @@ export default function ProductDetailPage() {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [siblingProducts, setSiblingProducts] = useState([]);
   
+  // Calculate current stock based on size or fallback to global stock
+  const currentStock = product ? (product.sizeStock && product.sizeStock[selectedSize] !== undefined 
+    ? product.sizeStock[selectedSize] 
+    : product.stock) : 0;
+
+  // Ensure quantity doesn't exceed newly selected size stock
+  useEffect(() => {
+    if (currentStock > 0 && quantity > currentStock) {
+      setQuantity(currentStock);
+    } else if (currentStock === 0) {
+      setQuantity(1); // will be handled by add to cart logic or disabled button
+    }
+  }, [selectedSize, currentStock]);
+
   const [zoomStyle, setZoomStyle] = useState({ transformOrigin: 'center center', transform: 'scale(1)' });
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   
@@ -226,10 +240,6 @@ export default function ProductDetailPage() {
 
           {/* Size Option Selector & Inventory */}
           {(() => {
-            const currentStock = (product.sizeStock && product.sizeStock[selectedSize] !== undefined) 
-              ? product.sizeStock[selectedSize] 
-              : product.stock;
-            
             return (
               <div className="product-option-group">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}>
@@ -263,19 +273,19 @@ export default function ProductDetailPage() {
           <div className="product-option-group">
             <span className="product-option-label">Quantity:</span>
             <div className="quantity-selector" style={{ width: '120px', marginTop: '5px' }}>
-              <button className="qty-btn" onClick={() => setQuantity(prev => Math.max(1, prev - 1))}>-</button>
+              <button className="qty-btn" onClick={() => setQuantity(prev => Math.max(1, prev - 1))} disabled={currentStock === 0}>-</button>
               <input type="text" readOnly value={quantity} className="qty-input" />
-              <button className="qty-btn" onClick={() => setQuantity(prev => prev + 1)}>+</button>
+              <button className="qty-btn" onClick={() => setQuantity(prev => (prev < currentStock ? prev + 1 : prev))} disabled={quantity >= currentStock || currentStock === 0}>+</button>
             </div>
           </div>
 
           {/* Action Row */}
           <div className="product-action-row">
-            <button className="btn-secondary" onClick={handleAddToCart} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <button className="btn-secondary" onClick={handleAddToCart} disabled={currentStock === 0} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: currentStock === 0 ? 0.5 : 1 }}>
               <ShoppingCart size={18} />
               Add to Cart
             </button>
-            <button className="btn-primary" onClick={handleBuyNow} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <button className="btn-primary" onClick={handleBuyNow} disabled={currentStock === 0} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: currentStock === 0 ? 0.5 : 1 }}>
               <CreditCard size={18} />
               Buy It Now
             </button>
