@@ -2074,28 +2074,25 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- MEGA MENU STYLES --- */
 .nav-item {
-  position: static; /* To allow full-width dropdown if needed, or relative for standard dropdown */
-}
-.bottom-nav-container {
-  position: relative; /* Anchor for the mega menu */
+  position: relative; /* Anchor for standard dropdown */
 }
 
 .mega-menu-container {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: 200px;
   background-color: #fff;
   color: #333;
   box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-  padding: 30px 40px;
+  padding: 15px 20px;
   z-index: 1000;
   visibility: hidden;
   opacity: 0;
   transform: translateY(15px);
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
   display: flex;
-  gap: 40px;
+  flex-direction: column;
   border-top: 3px solid #b11e22;
   cursor: default;
 }
@@ -2107,7 +2104,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .mega-menu-col-links {
-  min-width: 200px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -2125,50 +2121,6 @@ h1, h2, h3, h4, h5, h6 {
 .mega-menu-col-links a:hover {
   color: #b11e22;
   padding-left: 5px;
-}
-
-.mega-menu-products {
-  flex: 1;
-  display: flex;
-  gap: 20px;
-}
-
-.mega-product-card {
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s ease;
-}
-
-.mega-product-card:hover {
-  transform: translateY(-5px);
-}
-
-.mega-product-card img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.mega-product-card .title {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 5px;
-  color: #222;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mega-product-card .price {
-  font-size: 13px;
-  color: #b11e22;
-  font-weight: 700;
 }
 
 /* =========================================
