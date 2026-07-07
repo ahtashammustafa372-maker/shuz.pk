@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { useCart } from '../../../context/CartContext';
 import ProductCard from '../../../components/ProductCard';
 import { ChevronDown, ChevronUp, ShoppingCart, CreditCard, X } from 'lucide-react';
@@ -117,6 +118,17 @@ export default function ProductDetailPage() {
 
   return (
     <div className="container">
+      {/* Breadcrumbs */}
+      <div className="breadcrumb" style={{ margin: '20px 0', fontSize: '14px', color: 'var(--color-foreground-secondary)' }}>
+        <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>Home</Link>
+        <span style={{ margin: '0 8px' }}>&gt;</span>
+        <Link href={`/collections/${product.category_slug}`} style={{ textDecoration: 'none', color: 'inherit', textTransform: 'capitalize' }}>
+          {product.category_slug ? product.category_slug.replace(/-/g, ' ') : 'Category'}
+        </Link>
+        <span style={{ margin: '0 8px' }}>&gt;</span>
+        <span style={{ color: 'var(--color-foreground)', fontWeight: '500' }}>{product.title}</span>
+      </div>
+
       {/* Product Grid Layout */}
       <div className="product-detail-layout">
         {/* Left Side: Images Gallery */}

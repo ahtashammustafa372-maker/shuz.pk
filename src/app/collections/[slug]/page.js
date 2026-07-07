@@ -11,7 +11,7 @@ export default function CollectionPage() {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortOption, setSortOption] = useState('featured');
+  const [sortOption, setSortOption] = useState('newest');
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [visibleCount, setVisibleCount] = useState(12);
