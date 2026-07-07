@@ -35,6 +35,7 @@ export default function Header() {
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchRef = useRef(null);
+  const [megaMenuProducts, setMegaMenuProducts] = useState([]);
 
   // Use header menus from general settings or fallback
   const fallbackNavItems = [
@@ -61,6 +62,22 @@ export default function Header() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
+    
+    // Fetch some products for the mega menu
+    async function fetchMegaMenu() {
+      try {
+        const res = await fetch('/api/products');
+        if (res.ok) {
+          const data = await res.json();
+          // Filter products for 'Men' or just take first 4 featured
+          setMegaMenuProducts(data.slice(0, 4));
+        }
+      } catch (err) {
+        console.error("Mega menu fetch failed", err);
+      }
+    }
+    fetchMegaMenu();
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
@@ -245,11 +262,33 @@ export default function Header() {
           <div className="bottom-nav-container">
             <ul className="nav-list">
               {navItems.length > 0 ? navItems.map((item, idx) => (
-                <li key={item.id || idx}>
+                <li key={item.id || idx} className="nav-item">
                   <Link href={item.url || item.link || '/'} className="nav-link-main" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     {item.label}
                     {item.label === 'Men' && <ChevronDown size={14} />}
                   </Link>
+                  
+                  {/* Mega Menu Dropdown for Men */}
+                  {item.label === 'Men' && (
+                    <div className="mega-menu-container">
+                      <div className="mega-menu-col-links">
+                        <Link href="/collections/basketball">Basketball</Link>
+                        <Link href="/collections/sneakers">Sneakers</Link>
+                        <Link href="/collections/7a-premium">7a Premium</Link>
+                        <Link href="/collections/slides">Slides</Link>
+                        <Link href="/collections/caps">Caps</Link>
+                      </div>
+                      <div className="mega-menu-products">
+                        {megaMenuProducts.map(prod => (
+                          <Link key={prod.id} href={`/products/${prod.slug}`} className="mega-product-card">
+                            <img src={prod.images?.[0] || '/images/placeholder.png'} alt={prod.title} />
+                            <div className="title">{prod.title}</div>
+                            <div className="price">Rs.{prod.price.toLocaleString()}</div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </li>
               )) : (
                 <>
