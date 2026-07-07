@@ -27,11 +27,11 @@ export async function GET(request) {
     // 2. Collection Category Filter
     if (collection && collection !== 'all') {
       if (collection === 'new-arrival' || collection === 'new-arrivals') {
-        products = products.filter(p => p.new_arrival);
+        products = products.filter(p => p.new_arrival || p.category_slug === 'new-arrival' || p.category_slug === 'new-arrivals');
       } else if (collection === 'best-sellers') {
-        products = products.filter(p => p.featured);
+        products = products.filter(p => p.featured || p.category_slug === 'best-sellers');
       } else if (collection === 'flash-sale') {
-        products = products.filter(p => p.flash_sale);
+        products = products.filter(p => p.flash_sale || p.category_slug === 'flash-sale');
       } else if (collection === 'men') {
         // Return all products for men as a fallback since gender field doesn't exist
       } else if (collection === 'on-cloud-men' || collection === 'on-cloud' || collection === 'oncloud') {
@@ -98,7 +98,7 @@ export async function POST(request) {
       stock: body.stock !== undefined ? parseInt(body.stock) : 10,
       vendor: body.vendor || "Generic",
       featured: !!body.featured,
-      new_arrival: !!body.new_arrival,
+      new_arrival: true, // Always mark newly added products as new arrivals
       flash_sale: !!body.flash_sale
     };
 
