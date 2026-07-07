@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
+import SlideProductCard from '../components/SlideProductCard';
 import { Truck, ShieldCheck, RefreshCw, Zap } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
@@ -14,6 +15,21 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [slider, setSlider] = useState([]);
   const [categoryBoxes, setCategoryBoxes] = useState([]);
+  
+  const defaultHomepage = {
+    slidesSection: {
+      title: 'Slides', subtitle: 'Easy Wear', viewAllLink: '/collections/flip-flops', productSlugs: []
+    },
+    trendingSection: {
+      title: 'Trending Styles', subtitle: 'Top-tier quality replicas, designed to impress', viewAllLink: '/collections/all',
+      tabs: [
+        { id: 'new-arrivals', label: 'New Arrivals', filter: 'new_arrival' },
+        { id: 'best-sellers', label: 'Best Sellers', filter: 'featured' },
+        { id: 'flash-sale', label: 'Flash Sale', filter: 'flash_sale' }
+      ]
+    }
+  };
+  const [homepageSettings, setHomepageSettings] = useState(defaultHomepage);
   const [activeTab, setActiveTab] = useState('new-arrivals');
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +46,15 @@ export default function Home() {
           setProducts(pData);
           setSlider(sData.slider || []);
           setCategoryBoxes(sData.categoryBoxes || []);
+          if (sData.homepage) {
+            setHomepageSettings({
+              slidesSection: { ...defaultHomepage.slidesSection, ...sData.homepage.slidesSection },
+              trendingSection: { ...defaultHomepage.trendingSection, ...sData.homepage.trendingSection }
+            });
+            if (sData.homepage.trendingSection?.tabs?.length > 0) {
+              setActiveTab(sData.homepage.trendingSection.tabs[0].id);
+            }
+          }
         }
       } catch (err) {
         console.error("Failed to load data", err);
@@ -41,11 +66,14 @@ export default function Home() {
   }, []);
 
   const getFilteredProducts = () => {
-    if (activeTab === 'new-arrivals') {
+    const activeTabObj = homepageSettings.trendingSection.tabs.find(t => t.id === activeTab);
+    if (!activeTabObj) return products;
+
+    if (activeTabObj.filter === 'new_arrival') {
       return products.filter(p => p.new_arrival);
-    } else if (activeTab === 'best-sellers') {
+    } else if (activeTabObj.filter === 'featured') {
       return products.filter(p => p.featured);
-    } else if (activeTab === 'flash-sale') {
+    } else if (activeTabObj.filter === 'flash_sale') {
       return products.filter(p => p.price < p.compare_at_price);
     }
     return products;
@@ -233,9 +261,9 @@ export default function Home() {
       {/* Slides Easy Wear Section */}
       <section className="fluid-container" style={{ padding: '0 0 20px 0' }}>
         <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <h2 className="section-title" style={{ fontSize: '36px', fontWeight: '400', margin: '0 0 10px 0' }}>Slides</h2>
+          <h2 className="section-title" style={{ fontSize: '36px', fontWeight: '400', margin: '0 0 10px 0' }}>{homepageSettings.slidesSection.title}</h2>
           <p className="section-subtitle" style={{ fontSize: '15px', color: '#666', position: 'relative', display: 'inline-block', paddingBottom: '10px', marginTop: 0 }}>
-            Easy Wear
+            {homepageSettings.slidesSection.subtitle}
             <span style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '30px', height: '2px', backgroundColor: '#e84e4e' }}></span>
           </p>
         </div>
@@ -257,44 +285,23 @@ export default function Home() {
               1280: { slidesPerView: 5, spaceBetween: 20 },
             }}
           >
-            {[
-              { title: 'LOUI OASIS - BLUE', img: 'https://jutay.co/cdn/shop/files/9_4_686a8b3d-112e-46db-b408-0c32af251b1a.webp?v=1767165610', sizes: ['41','42','43','44','45'] },
-              { title: 'LOUI OASIS - BROWN', img: 'https://jutay.co/cdn/shop/files/10_5_d99e222e-d315-418a-a465-a5bd953d27b4.webp?v=1767165497', sizes: ['42','43','44','45'] },
-              { title: 'LOUI OASIS - BLACK', img: 'https://jutay.co/cdn/shop/files/3_73d3f5fc-afa9-4d55-bb68-b20c2b5973ae.webp?v=1767165383', sizes: ['45'] },
-              { title: 'H IZMIR SLIDE - BLACK CAMO', img: 'https://jutay.co/cdn/shop/files/5_4_08dbd19f-7636-46fb-89ba-081621e1d73e.webp?v=1767165815', sizes: ['42','43'] },
-              { title: 'H IZMIR SLIDE - BEIGE NATURAL', img: 'https://jutay.co/cdn/shop/files/4_5_6bc242e2-7e43-45d2-ace4-67b25a5a6615.webp?v=1767165674', sizes: ['41','42','44'] },
-              { title: 'H IZMIR SLIDE - TAN (EMBOSSED)', img: 'https://jutay.co/cdn/shop/files/04_887f58c6-da6f-4ba6-a22e-db795e47ac33.webp?v=1767165054', sizes: ['41','42','43'] }
-            ].map((product, index) => (
-              <SwiperSlide key={index}>
-                <div className="slide-product-card">
-                  <div className="slide-badge">-31%</div>
-                  <div className="slide-product-media">
-                    <img src={product.img} alt={product.title} className="slide-product-image" />
-                  </div>
-                  <div className="slide-product-info">
-                    <div className="slide-product-title">{product.title}</div>
-                    <div className="slide-product-price">
-                      <span className="slide-price-sale">Rs.11,999</span>
-                      <span className="slide-price-compare">Rs.17,500</span>
-                    </div>
-                    <div className="slide-sizes">
-                      {product.sizes.map(size => (
-                        <span key={size} className="slide-size-badge">{size}</span>
-                      ))}
-                    </div>
-                    <div className="slide-actions">
-                      <button className="slide-add-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                        Add to Cart
-                      </button>
-                      <button className="slide-wishlist-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
+            {homepageSettings.slidesSection.productSlugs.length > 0 ? (
+              homepageSettings.slidesSection.productSlugs.map((slug, index) => {
+                const product = products.find(p => p.slug === slug);
+                if (!product) return null;
+                return (
+                  <SwiperSlide key={index}>
+                    <SlideProductCard product={product} />
+                  </SwiperSlide>
+                );
+              })
+            ) : (
+              products.slice(0, 6).map((product, index) => (
+                <SwiperSlide key={index}>
+                  <SlideProductCard product={product} />
+                </SwiperSlide>
+              ))
+            )}
           </Swiper>
 
           <div className="slides-button-prev" style={{ position: 'absolute', left: '-20px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, width: '40px', height: '40px', backgroundColor: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', cursor: 'pointer' }}>
@@ -306,7 +313,7 @@ export default function Home() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '10px' }}>
-          <Link href="/collections/flip-flops" style={{ display: 'inline-block', backgroundColor: '#000', color: '#fff', border: 'none', padding: '12px 35px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', borderRadius: '5px', textDecoration: 'none' }}>
+          <Link href={homepageSettings.slidesSection.viewAllLink} style={{ display: 'inline-block', backgroundColor: '#000', color: '#fff', border: 'none', padding: '12px 35px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', borderRadius: '5px', textDecoration: 'none' }}>
             View All
           </Link>
         </div>
@@ -315,29 +322,20 @@ export default function Home() {
       {/* Featured Products Tabs */}
       <section className="fluid-container" style={{ padding: '0 0 20px 0' }}>
         <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <h2 className="section-title" style={{ margin: '0 0 10px 0' }}>Trending Styles</h2>
-          <p className="section-subtitle" style={{ marginTop: 0 }}>Top-tier quality replicas, designed to impress</p>
+          <h2 className="section-title" style={{ margin: '0 0 10px 0' }}>{homepageSettings.trendingSection.title}</h2>
+          <p className="section-subtitle" style={{ marginTop: 0 }}>{homepageSettings.trendingSection.subtitle}</p>
         </div>
 
         <div className="tabs-header">
-          <button 
-            className={`tab-btn ${activeTab === 'new-arrivals' ? 'active' : ''}`}
-            onClick={() => setActiveTab('new-arrivals')}
-          >
-            New Arrivals
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'best-sellers' ? 'active' : ''}`}
-            onClick={() => setActiveTab('best-sellers')}
-          >
-            Best Sellers
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'flash-sale' ? 'active' : ''}`}
-            onClick={() => setActiveTab('flash-sale')}
-          >
-            Flash Sale
-          </button>
+          {homepageSettings.trendingSection.tabs.map(tab => (
+            <button 
+              key={tab.id}
+              className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {loading ? (
@@ -353,7 +351,7 @@ export default function Home() {
         )}
 
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <Link href="/collections/all" className="btn-secondary" style={{ display: 'inline-block', maxWidth: '200px' }}>
+          <Link href={homepageSettings.trendingSection.viewAllLink} className="btn-secondary" style={{ display: 'inline-block', maxWidth: '200px' }}>
             View All Products
           </Link>
         </div>

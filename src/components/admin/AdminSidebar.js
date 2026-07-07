@@ -18,6 +18,7 @@ export default function AdminSidebar() {
     { label: 'Navigation', href: '/admin/navigation', icon: <Navigation size={18} /> },
     { label: 'Footer Settings', href: '/admin/footer', icon: <LayoutDashboard size={18} /> },
     { label: 'Pages & Policies', href: '/admin/pages', icon: <FileText size={18} /> },
+    { label: 'Home Page Sections', href: '/admin/homepage', icon: <LayoutDashboard size={18} /> },
     { label: 'Settings', href: '/admin/settings', icon: <Settings size={18} /> }
   ];
 
