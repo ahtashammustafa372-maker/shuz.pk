@@ -27,6 +27,11 @@ export default function Home() {
         { id: 'best-sellers', label: 'Best Sellers', filter: 'featured' },
         { id: 'flash-sale', label: 'Flash Sale', filter: 'flash_sale' }
       ]
+    },
+    middleBanner: {
+      image: "https://jutay.co/cdn/shop/files/Shoes_Banner_f01545a0-435e-4dba-b58e-63e09c18ed63.webp?v=1775473103",
+      link: "/collections/all",
+      enabled: true
     }
   };
   const [homepageSettings, setHomepageSettings] = useState(defaultHomepage);
@@ -49,7 +54,8 @@ export default function Home() {
           if (sData.homepage) {
             setHomepageSettings({
               slidesSection: { ...defaultHomepage.slidesSection, ...sData.homepage.slidesSection },
-              trendingSection: { ...defaultHomepage.trendingSection, ...sData.homepage.trendingSection }
+              trendingSection: { ...defaultHomepage.trendingSection, ...sData.homepage.trendingSection },
+              middleBanner: { ...defaultHomepage.middleBanner, ...sData.homepage.middleBanner }
             });
             if (sData.homepage.trendingSection?.tabs?.length > 0) {
               setActiveTab(sData.homepage.trendingSection.tabs[0].id);
@@ -167,6 +173,19 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Middle Banner Section */}
+      {homepageSettings.middleBanner?.enabled && homepageSettings.middleBanner?.image && (
+        <section className="fluid-container" style={{ padding: '20px 0' }}>
+          <Link href={homepageSettings.middleBanner.link || '#'} style={{ display: 'block', width: '100%' }}>
+            <img 
+              src={homepageSettings.middleBanner.image} 
+              alt="Promotional Banner" 
+              style={{ width: '100%', height: 'auto', display: 'block' }} 
+            />
+          </Link>
+        </section>
+      )}
 
       {/* Category Boxes Slider Section */}
       <section className="fluid-container" style={{ padding: '10px 0 20px 0' }}>

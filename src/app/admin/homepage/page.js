@@ -26,6 +26,11 @@ export default function HomePageSectionsAdmin() {
         { id: 'best-sellers', label: 'Best Sellers', filter: 'featured' },
         { id: 'flash-sale', label: 'Flash Sale', filter: 'flash_sale' }
       ]
+    },
+    middleBanner: {
+      image: 'https://jutay.co/cdn/shop/files/Shoes_Banner_f01545a0-435e-4dba-b58e-63e09c18ed63.webp?v=1775473103',
+      link: '/collections/all',
+      enabled: true
     }
   };
 
@@ -47,7 +52,8 @@ export default function HomePageSectionsAdmin() {
           if (settingsData.homepage) {
             setHomepage({
               slidesSection: { ...defaultHomepage.slidesSection, ...settingsData.homepage.slidesSection },
-              trendingSection: { ...defaultHomepage.trendingSection, ...settingsData.homepage.trendingSection }
+              trendingSection: { ...defaultHomepage.trendingSection, ...settingsData.homepage.trendingSection },
+              middleBanner: { ...defaultHomepage.middleBanner, ...settingsData.homepage.middleBanner }
             });
           }
         }
@@ -286,6 +292,65 @@ export default function HomePageSectionsAdmin() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Middle Banner Manager */}
+      <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', marginTop: '30px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '20px', borderBottom: '1px solid #e5e7eb', paddingBottom: '10px' }}>
+          Middle Promotional Banner (Below New Arrivals)
+        </h2>
+        
+        <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input 
+            type="checkbox" 
+            id="middleBannerEnabled"
+            checked={homepage.middleBanner.enabled}
+            onChange={(e) => setHomepage(prev => ({ ...prev, middleBanner: { ...prev.middleBanner, enabled: e.target.checked } }))}
+            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+          />
+          <label htmlFor="middleBannerEnabled" style={{ fontSize: '15px', fontWeight: '500', cursor: 'pointer' }}>
+            Enable Middle Banner
+          </label>
+        </div>
+
+        {homepage.middleBanner.enabled && (
+          <>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Banner Image URL</label>
+              <input 
+                type="text" 
+                value={homepage.middleBanner.image}
+                onChange={(e) => setHomepage(prev => ({ ...prev, middleBanner: { ...prev.middleBanner, image: e.target.value } }))}
+                placeholder="e.g. /images/promo_banner.jpg or https://..."
+                style={{ width: '100%', padding: '10px', border: '1px solid #e5e7eb', borderRadius: '6px' }}
+              />
+            </div>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Banner Link URL</label>
+              <input 
+                type="text" 
+                value={homepage.middleBanner.link}
+                onChange={(e) => setHomepage(prev => ({ ...prev, middleBanner: { ...prev.middleBanner, link: e.target.value } }))}
+                placeholder="e.g. /collections/all"
+                style={{ width: '100%', padding: '10px', border: '1px solid #e5e7eb', borderRadius: '6px' }}
+              />
+            </div>
+            
+            {homepage.middleBanner.image && (
+              <div style={{ marginTop: '20px' }}>
+                <p style={{ fontSize: '14px', fontWeight: '500', marginBottom: '10px' }}>Preview:</p>
+                <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px', backgroundColor: '#fafafa' }}>
+                  <img 
+                    src={homepage.middleBanner.image} 
+                    alt="Middle Banner Preview" 
+                    style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Invalid+Image+URL' }}
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
