@@ -152,7 +152,7 @@ export default function Footer() {
 
         {/* Footer Bottom */}
         <div className="footer-bottom">
-          <p>{generalSettings?.footer?.copyrightText || generalSettings?.footerCopyrightText || `© Jutay ${new Date().getFullYear()} - All Rights Reserved`}</p>
+          <p>{generalSettings?.footer?.copyrightText || generalSettings?.footerCopyrightText || `© Shuz ${new Date().getFullYear()} - All Rights Reserved`}</p>
           <p dangerouslySetInnerHTML={{ __html: generalSettings?.footer?.developerText || generalSettings?.footerDeveloperText || 'Developed By <span class="ozbix-text">Ozbix</span>' }} />
         </div>
       </div>

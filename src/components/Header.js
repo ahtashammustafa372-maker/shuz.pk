@@ -212,7 +212,7 @@ export default function Header() {
 
             <div className="middle-bar-logo">
               <Link href="/">
-                {/* Fallback to text if the image URL is broken, but we try to load the actual logo from jutay.co */}
+                {/* Fallback to text if the image URL is broken, but we try to load the actual logo from shuz.pk */}
                 <img
                   src="/images/logo.png"
                   alt="JUTAY"

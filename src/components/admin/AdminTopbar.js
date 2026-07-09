@@ -124,7 +124,7 @@ export default function AdminTopbar() {
           <UserCircle size={28} color="#71717a" />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '14px', fontWeight: '600', color: '#18181b' }}>Admin User</span>
-            <span style={{ fontSize: '11px', color: '#71717a' }}>admin@jutay.co</span>
+            <span style={{ fontSize: '11px', color: '#71717a' }}>admin@shuz.pk</span>
           </div>
           <button 
             onClick={handleLogout} 

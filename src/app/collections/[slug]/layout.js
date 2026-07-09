@@ -2,7 +2,7 @@ import db from '../../../lib/db';
 
 export async function generateMetadata({ params }) {
   const collectionSlug = params.slug;
-  let title = "Collections - Jutay.co";
+  let title = "Collections - Shuz.pk";
   let description = "Browse our amazing collections.";
   let ogImage = "/images/logo.png";
   
@@ -13,12 +13,12 @@ export async function generateMetadata({ params }) {
       // Collections don't currently have an seo object in DB, but we could add one later.
       // For now, fallback to collection title.
       const seo = target.seo || {};
-      title = seo.title || `${target.name} Collection - Jutay.co`;
+      title = seo.title || `${target.name} Collection - Shuz.pk`;
       description = seo.description || `Shop our latest ${target.name} shoes online in Pakistan.`;
       ogImage = seo.ogImage || target.image || ogImage;
     }
   } else {
-    title = "All Collections - Jutay.co";
+    title = "All Collections - Shuz.pk";
   }
 
   return {

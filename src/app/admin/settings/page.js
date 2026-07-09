@@ -173,7 +173,7 @@ export default function AdminSettings() {
             <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: '#3f3f46' }}>Footer Copyright Text</label>
             <input 
               type="text" 
-              value={settings.general.footerCopyrightText !== undefined ? settings.general.footerCopyrightText : '© Jutay 2026 - All Rights Reserved'} 
+              value={settings.general.footerCopyrightText !== undefined ? settings.general.footerCopyrightText : '© Shuz 2026 - All Rights Reserved'} 
               onChange={(e) => setSettings({ ...settings, general: { ...settings.general, footerCopyrightText: e.target.value } })}
               style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }}
             />

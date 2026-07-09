@@ -11,11 +11,11 @@ export async function generateMetadata() {
   const keywordsStr = [seo.keywords, seo.tags].filter(Boolean).join(', ');
 
   return {
-    title: seo.title || "Shop Best Sneakers & Premium Shoes - Jutay.co",
+    title: seo.title || "Shop Best Sneakers & Premium Shoes - Shuz.pk",
     description: seo.description || "Bringing the best global sneaker culture to Pakistan.",
     keywords: keywordsStr || "sneakers, shoes, pakistan",
     openGraph: {
-      title: seo.title || "Shop Best Sneakers & Premium Shoes - Jutay.co",
+      title: seo.title || "Shop Best Sneakers & Premium Shoes - Shuz.pk",
       description: seo.description || "Bringing the best global sneaker culture to Pakistan.",
       images: [seo.ogImage || '/images/logo.png'],
     },

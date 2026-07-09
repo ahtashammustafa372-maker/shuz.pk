@@ -289,15 +289,15 @@ function getSeedData() {
     storeInfo: {
       address: "123 Sneaker Street, Lahore",
       phone: "+92 300 1234567",
-      email: "info@jutay.co",
+      email: "info@shuz.pk",
       hours: "Mon-Sat: 10AM - 10PM"
     },
     socialLinks: {
-      facebook: "https://facebook.com/jutay",
-      instagram: "https://instagram.com/jutay"
+      facebook: "https://facebook.com/shuz",
+      instagram: "https://instagram.com/shuz"
     },
     seo: {
-      title: "Shop Best Sneakers & Premium Shoes - Jutay.co",
+      title: "Shop Best Sneakers & Premium Shoes - Shuz.pk",
       description: "Bringing the best sneakers, runners and 7A premium shoes to Pakistan.",
       keywords: "sneakers, shoes, pakistan",
       ogImage: "/images/logo.png"
@@ -310,7 +310,7 @@ function getSeedData() {
       description: "Bringing the best of global sneaker culture to pakistan by selling Premium Shoes at fraction of the price of their brand-new counterparts",
       newsletterTitle: "Let's get in touch",
       newsletterDesc: "Sign up for our newsletter for updates and offers.",
-      copyrightText: "© Jutay 2026 - All Rights Reserved",
+      copyrightText: "© Shuz 2026 - All Rights Reserved",
       developerText: 'Developed By <span class="ozbix-text">Ozbix</span>',
       menus: {
         quickLinks: [
@@ -347,7 +347,7 @@ function getSeedData() {
       title: "Contact Us",
       slug: "contact-us",
       type: "page",
-      content: "<h2>Contact Us</h2><p>Email us at info@jutay.com or call us at +92-XXX-XXXXXXX.</p>",
+      content: "<h2>Contact Us</h2><p>Email us at info@shuz.pkm or call us at +92-XXX-XXXXXXX.</p>",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     },

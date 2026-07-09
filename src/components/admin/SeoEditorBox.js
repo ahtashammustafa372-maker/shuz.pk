@@ -31,8 +31,8 @@ export default function SeoEditorBox({ seoData, onChange }) {
                 <img src="/favicon.ico" alt="icon" style={{ width: '16px', height: '16px' }} onError={(e) => e.target.style.display='none'} />
               </div>
               <div>
-                <span style={{ display: 'block', color: '#202124', lineHeight: '1.2' }}>Jutay.co</span>
-                <span style={{ display: 'block', color: '#4d5156', fontSize: '12px', lineHeight: '1.2' }}>https://jutay.co › ...</span>
+                <span style={{ display: 'block', color: '#202124', lineHeight: '1.2' }}>Shuz.pk</span>
+                <span style={{ display: 'block', color: '#4d5156', fontSize: '12px', lineHeight: '1.2' }}>https://shuz.pk › ...</span>
               </div>
             </div>
             <div style={{ fontSize: '20px', color: '#1a0dab', marginBottom: '4px', cursor: 'pointer', display: 'inline-block', fontFamily: 'Arial, sans-serif' }}>
@@ -56,7 +56,7 @@ export default function SeoEditorBox({ seoData, onChange }) {
             style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', transition: 'border-color 0.2s', boxSizing: 'border-box' }}
             value={currentTitle}
             onChange={(e) => handleChange('title', e.target.value)}
-            placeholder="e.g. Awesome Sneakers | Jutay.co"
+            placeholder="e.g. Awesome Sneakers | Shuz.pk"
             onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
             onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
           />
@@ -118,7 +118,7 @@ export default function SeoEditorBox({ seoData, onChange }) {
             style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
             value={seoData?.canonicalUrl || ''}
             onChange={(e) => handleChange('canonicalUrl', e.target.value)}
-            placeholder="https://jutay.co/product/your-product (Leave blank for default)"
+            placeholder="https://shuz.pk/product/your-product (Leave blank for default)"
             onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
             onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
           />

@@ -25,9 +25,9 @@ export async function POST(request) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-      from: '"JUTAY Newsletter" <newsletter@jutay.co>', // sender address
+      from: '"JUTAY Newsletter" <newsletter@shuz.pk>', // sender address
       to: email, // receiver
-      subject: "Welcome to Jutay Newsletter! 🎉", // Subject line
+      subject: "Welcome to Shuz Newsletter! 🎉", // Subject line
       text: "Hello! Thank you for subscribing to our newsletter. You'll receive our latest updates and offers soon.", // plain text body
       html: `
         <div style="font-family: Arial, sans-serif; text-align: center; color: #333;">

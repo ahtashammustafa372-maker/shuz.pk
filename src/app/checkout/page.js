@@ -107,7 +107,7 @@ export default function CheckoutPage() {
         </div>
         <h1 className="success-title">Order Placed Successfully!</h1>
         <p className="success-message">
-          Thank you for shopping with Jutay.co! Your order has been registered and is being prepared at our Lahore warehouse.
+          Thank you for shopping with Shuz.pk! Your order has been registered and is being prepared at our Lahore warehouse.
         </p>
 
         <div className="success-details-card">

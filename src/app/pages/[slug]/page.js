@@ -29,7 +29,7 @@ export default async function PageView({ params }) {
   };
 
   return (
-    <div className="fluid-container" style={{ padding: '60px 20px' }}>
+    <div className="container" style={{ padding: '60px 20px' }}>
       <h1 style={{ fontSize: '36px', fontWeight: '700', textAlign: 'center', marginBottom: '10px' }}>{pageData.title}</h1>
       <p style={{ textAlign: 'center', color: '#666', marginBottom: '50px' }}>
         Home / <span style={{ color: '#000' }}>{pageData.title}</span>
@@ -97,7 +97,7 @@ export default async function PageView({ params }) {
       ) : (
         <div 
           className="page-content" 
-          style={{ maxWidth: '800px', margin: '0 auto', fontSize: '16px', lineHeight: '1.8' }}
+          style={{ fontSize: '16px', lineHeight: '1.8' }}
           dangerouslySetInnerHTML={{ __html: pageData.content }}
         />
       )}

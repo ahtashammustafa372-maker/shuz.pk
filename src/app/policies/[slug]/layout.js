@@ -5,16 +5,16 @@ export async function generateMetadata({ params }) {
   
   if (!page) {
     return {
-      title: 'Policy Not Found - Jutay.co'
+      title: 'Policy Not Found - Shuz.pk'
     };
   }
 
   const seo = page.seo || {};
-  const title = seo.title || `${page.title} - Jutay.co`;
+  const title = seo.title || `${page.title} - Shuz.pk`;
   // strip html tags for description fallback
   const contentFallback = page.content ? page.content.replace(/<[^>]+>/g, '').substring(0, 160) : '';
   const description = seo.description || contentFallback;
-  const keywordsStr = [seo.keywords || `${page.title}, jutay`, seo.tags].filter(Boolean).join(', ');
+  const keywordsStr = [seo.keywords || `${page.title}, shuz`, seo.tags].filter(Boolean).join(', ');
   const ogImage = seo.ogImage || '/images/logo.png';
 
   return {
