@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, Plus, Trash2 } from 'lucide-react';
+import { Save, Plus, Trash2, Upload } from 'lucide-react';
 
 export default function SliderAdmin() {
   const [slider, setSlider] = useState([]);
@@ -41,6 +41,31 @@ export default function SliderAdmin() {
 
   const handleChange = (id, field, value) => {
     setSlider(slider.map(s => s.id === id ? { ...s, [field]: value } : s));
+  };
+
+  const handleImageUpload = async (id, file) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('files', file);
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.urls && data.urls.length > 0) {
+          handleChange(id, 'image', data.urls[0]);
+        }
+      } else {
+        setMessage('Failed to upload image.');
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage('Error uploading image.');
+      setTimeout(() => setMessage(''), 3000);
+    }
   };
 
   const handleSave = async () => {
@@ -111,13 +136,33 @@ export default function SliderAdmin() {
             <div style={{ display: 'grid', gap: '15px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '5px' }}>Image URL</label>
-                <input 
-                  type="text" 
-                  value={slide.image || ''} 
-                  onChange={(e) => handleChange(slide.id, 'image', e.target.value)}
-                  style={{ width: '100%', padding: '10px', border: '1px solid #d1d5db', borderRadius: '4px' }}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <input 
+                    type="text" 
+                    value={slide.image || ''} 
+                    onChange={(e) => handleChange(slide.id, 'image', e.target.value)}
+                    style={{ flex: 1, padding: '10px', border: '1px solid #d1d5db', borderRadius: '4px' }}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <label style={{
+                    display: 'flex', alignItems: 'center', gap: '5px',
+                    backgroundColor: '#e5e7eb', color: '#374151',
+                    padding: '0 15px', borderRadius: '4px', cursor: 'pointer',
+                    border: '1px solid #d1d5db', fontWeight: '500', fontSize: '14px'
+                  }}>
+                    <Upload size={16} />
+                    Upload
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        handleImageUpload(slide.id, e.target.files[0]);
+                        e.target.value = ''; // Reset input to allow uploading same file again if needed
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
               
               <div>
