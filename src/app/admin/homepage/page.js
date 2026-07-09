@@ -143,6 +143,34 @@ export default function HomePageSectionsAdmin() {
     });
   };
 
+  const handleMiddleBannerUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('files', file);
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.urls && data.urls.length > 0) {
+          setHomepage(prev => ({ 
+            ...prev, 
+            middleBanner: { ...prev.middleBanner, image: data.urls[0] } 
+          }));
+        }
+      } else {
+        alert('Upload failed');
+      }
+    } catch (err) {
+      console.error('Error uploading:', err);
+      alert('Error uploading image');
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -317,13 +345,36 @@ export default function HomePageSectionsAdmin() {
           <>
             <div style={{ marginBottom: '15px' }}>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Banner Image URL</label>
-              <input 
-                type="text" 
-                value={homepage.middleBanner.image}
-                onChange={(e) => setHomepage(prev => ({ ...prev, middleBanner: { ...prev.middleBanner, image: e.target.value } }))}
-                placeholder="e.g. /images/promo_banner.jpg or https://..."
-                style={{ width: '100%', padding: '10px', border: '1px solid #e5e7eb', borderRadius: '6px' }}
-              />
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <input 
+                  type="text" 
+                  value={homepage.middleBanner.image}
+                  onChange={(e) => setHomepage(prev => ({ ...prev, middleBanner: { ...prev.middleBanner, image: e.target.value } }))}
+                  placeholder="e.g. /images/promo_banner.jpg or https://..."
+                  style={{ flex: 1, padding: '10px', border: '1px solid #e5e7eb', borderRadius: '6px' }}
+                />
+                <label style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '6px', 
+                  padding: '10px 16px', 
+                  backgroundColor: '#f3f4f6', 
+                  color: '#4b5563', 
+                  border: '1px solid #e5e7eb', 
+                  borderRadius: '6px', 
+                  cursor: 'pointer', 
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'
+                }}>
+                  Upload
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleMiddleBannerUpload}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
             </div>
             <div style={{ marginBottom: '15px' }}>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Banner Link URL</label>
