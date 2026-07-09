@@ -70,7 +70,6 @@ export default function HomePageSectionsAdmin() {
     setSaving(true);
     try {
       const updatedSettings = {
-        ...settings,
         homepage
       };
       

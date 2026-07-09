@@ -42,7 +42,7 @@ export default function AdminSettings() {
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings)
+        body: JSON.stringify({ theme: settings.theme, general: settings.general, contact: settings.contact })
       });
       if (res.ok) {
         alert("Settings saved successfully! Refresh the public site to see changes.");
