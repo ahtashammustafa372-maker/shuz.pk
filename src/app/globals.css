@@ -2127,6 +2127,58 @@ h1, h2, h3, h4, h5, h6 {
    NEW FOOTER STYLES (JUTAY CLONE)
    ========================================= */
 
+/* --- PROSE TYPOGRAPHY STYLES (For Pages/Policies) --- */
+.prose {
+  color: #333;
+  font-family: inherit;
+  word-wrap: break-word;
+}
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  line-height: 1.8;
+}
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #111;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.33;
+}
+.prose h1 { font-size: 2.25em; }
+.prose h2 { font-size: 1.75em; }
+.prose h3 { font-size: 1.375em; }
+.prose h4 { font-size: 1.125em; }
+.prose ul, .prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+.prose strong {
+  font-weight: 600;
+  color: #111;
+}
+.prose a {
+  color: #b11e22;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.prose blockquote {
+  font-weight: 500;
+  font-style: italic;
+  color: #111;
+  border-left-width: 0.25rem;
+  border-left-color: #e5e7eb;
+  quotes: "\201C""\201D""\2018""\2019";
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-left: 1em;
+}
+
 .site-footer {
   background-color: #000000;
   color: #ffffff;

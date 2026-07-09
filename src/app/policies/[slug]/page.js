@@ -25,10 +25,8 @@ export default async function PolicyView({ params }) {
           Home / <span style={{ color: '#000' }}>{pageData.title}</span>
         </p>
         
-        <div className="page-layout-grid">
-          <div className="page-layout-left" style={{ margin: '0 auto', maxWidth: '800px' }}>
-            <div dangerouslySetInnerHTML={{ __html: pageData.content }} style={{ lineHeight: '1.8', fontSize: '15px', color: '#444' }} />
-          </div>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px' }}>
+          <div className="prose" dangerouslySetInnerHTML={{ __html: pageData.content }} style={{ lineHeight: '1.8', fontSize: '16px', color: '#333' }} />
         </div>
       </div>
   );
