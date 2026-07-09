@@ -102,23 +102,7 @@ export default function Home() {
           loop={true}
           style={{ width: '100%' }}
         >
-          {(slider && slider.length > 0 ? slider : [
-            {
-              id: 1,
-              link: "/collections/sneakers",
-              image: "https://jutay.co/cdn/shop/files/new1_1.webp?v=1781527977"
-            },
-            {
-              id: 2,
-              link: "/collections/mens-shoes",
-              image: "https://jutay.co/cdn/shop/files/Shoes_Banner_f01545a0-435e-4dba-b58e-63e09c18ed63.webp?v=1775473103"
-            },
-            {
-              id: 3,
-              link: "/collections/womens-shoes",
-              image: "https://jutay.co/cdn/shop/files/1_copy_5_326273d6-1833-449b-8cbd-efeef43d9fa8.webp?v=1744279321"
-            }
-          ]).map((slide) => (
+          {(slider && slider.length > 0 ? slider : []).map((slide) => (
             <SwiperSlide key={slide.id}>
               <div className="hero-slide active" style={{ width: '100%', display: 'block' }}>
                 <Link href={slide.link} style={{ display: 'block', width: '100%' }}>
