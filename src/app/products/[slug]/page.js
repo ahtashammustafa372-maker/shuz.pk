@@ -77,8 +77,10 @@ export default function ProductDetailPage() {
             const related = list.filter(p => p.category_slug === target.category_slug && p.id !== target.id);
             setRecommendedProducts(related.slice(0, 4));
 
-            // Find sibling products (same exact title) to act as color variants
-            const siblings = list.filter(p => p.title.toLowerCase() === target.title.toLowerCase());
+            // Find sibling products (color variants) by comparing the base title (before the hyphen)
+            const getBaseName = (title) => title.includes('-') ? title.split('-')[0].trim().toLowerCase() : title.toLowerCase();
+            const targetBaseName = getBaseName(target.title);
+            const siblings = list.filter(p => getBaseName(p.title) === targetBaseName);
             setSiblingProducts(siblings);
           }
         }
@@ -204,16 +206,26 @@ export default function ProductDetailPage() {
           {siblingProducts.length > 1 ? (
             <div className="product-option-group">
               <span className="product-option-label">Color: <span style={{ fontWeight: '500', color: 'var(--color-foreground-secondary)' }}>{product.colors[0] || 'Default'}</span></span>
-              <div className="filter-color-list" style={{ marginTop: '5px' }}>
+              <div className="filter-color-list" style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {siblingProducts.map(sibling => {
                    const siblingColor = sibling.colors && sibling.colors.length > 0 ? sibling.colors[0] : 'Default';
                    return (
                      <button
                        key={sibling.id}
-                       className={`filter-color-btn ${sibling.id === product.id ? 'active' : ''}`}
+                       className={`color-thumbnail-btn ${sibling.id === product.id ? 'active' : ''}`}
                        onClick={() => window.location.href = `/products/${sibling.slug}`}
+                       title={siblingColor}
+                       style={{
+                         width: '65px', height: '65px', borderRadius: '50%', overflow: 'hidden',
+                         padding: 0, border: sibling.id === product.id ? '2px solid var(--color-primary)' : '2px solid transparent',
+                         boxShadow: sibling.id === product.id ? '0 0 0 2px #fff inset' : '0 1px 3px rgba(0,0,0,0.1)',
+                         cursor: 'pointer', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                         transition: 'transform 0.2s, box-shadow 0.2s'
+                       }}
+                       onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                       onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                      >
-                       {siblingColor}
+                       <img src={sibling.images[0] || '/placeholder.png'} alt={siblingColor} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                      </button>
                    );
                 })}
