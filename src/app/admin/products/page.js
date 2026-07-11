@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, Search } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Search, Copy } from 'lucide-react';
 import SeoEditorBox from '../../../components/admin/SeoEditorBox';
 
 export default function AdminProducts() {
@@ -153,6 +153,29 @@ export default function AdminProducts() {
     }
   };
 
+  const handleDuplicateProduct = async (product) => {
+    if (!confirm("Are you sure you want to duplicate this product?")) return;
+    try {
+      const payload = { ...product };
+      delete payload.id;
+      payload.title = payload.title + ' (Copy)';
+      
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        loadData();
+      } else {
+        alert("Failed to duplicate product");
+      }
+    } catch (err) {
+      console.error("Failed to duplicate product", err);
+    }
+  };
+
   const handleEditProduct = async (e) => {
     e.preventDefault();
     try {
@@ -244,8 +267,9 @@ export default function AdminProducts() {
                 </td>
                 <td style={{ padding: '15px' }}>
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <button onClick={() => setEditingProduct(p)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: '5px' }}><Edit2 size={16} /></button>
-                    <button onClick={() => handleDeleteProduct(p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }}><Trash2 size={16} /></button>
+                    <button onClick={() => setEditingProduct(p)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: '5px' }} title="Edit"><Edit2 size={16} /></button>
+                    <button onClick={() => handleDuplicateProduct(p)} style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', padding: '5px' }} title="Duplicate"><Copy size={16} /></button>
+                    <button onClick={() => handleDeleteProduct(p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }} title="Delete"><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>

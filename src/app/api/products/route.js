@@ -99,7 +99,8 @@ export async function POST(request) {
       vendor: body.vendor || "Generic",
       featured: !!body.featured,
       new_arrival: true, // Always mark newly added products as new arrivals
-      flash_sale: !!body.flash_sale
+      flash_sale: !!body.flash_sale,
+      seo: body.seo || { title: '', description: '', keywords: '', ogImage: '' }
     };
 
     const newProduct = db.createProduct(productData);
