@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
-const db = require('../../../lib/db');
+import dbConnect from '../../../lib/mongoose';
+import Return from '../../../models/Return';
+import Notification from '../../../models/Notification';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request) {
+export async function GET() {
   try {
-    const returns = db.getReturns();
-    // Sort returns by date descending
-    returns.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    await dbConnect();
+    const returns = await Return.find({}).sort({ created_at: -1 }).lean();
     return NextResponse.json(returns);
   } catch (err) {
     console.error("API Returns GET Error:", err);
@@ -17,14 +18,23 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    await dbConnect();
     const body = await request.json();
     
-    if (!body.order_id || !body.customer_name || !body.reason) {
+    if (!body.order_id || !body.customer_email || !body.reason) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const newReturn = db.createReturn(body);
-    db.addNotification('New Return Request', `Return requested for Order #${newReturn.order_id} by ${newReturn.customer_name}.`, 'return', '/admin/returns');
+    const newReturn = new Return(body);
+    await newReturn.save();
+    
+    await Notification.create({
+      title: 'New Return Request',
+      message: `Return requested for Order ${newReturn.order_id} by ${newReturn.customer_name}.`,
+      type: 'return',
+      link: '/admin/returns'
+    });
+
     return NextResponse.json(newReturn, { status: 201 });
   } catch (err) {
     console.error("API Returns POST Error:", err);

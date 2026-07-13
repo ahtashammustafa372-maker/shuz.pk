@@ -1,44 +1,31 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import dbConnect from '../../../lib/mongoose';
+import User from '../../../models/User';
 
-const dbPath = path.join(process.cwd(), 'src/lib/db.json');
-
-function readDB() {
-  const fileData = fs.readFileSync(dbPath, 'utf8');
-  return JSON.parse(fileData);
-}
-
-function writeDB(data) {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-}
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const db = readDB();
-  return NextResponse.json(db.users || []);
+  try {
+    await dbConnect();
+    const users = await User.find({}).lean();
+    return NextResponse.json(users);
+  } catch (err) {
+    console.error("API Users GET Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
 export async function POST(request) {
   try {
-    const data = await request.json();
-    const db = readDB();
+    await dbConnect();
+    const body = await request.json();
     
-    if (!db.users) db.users = [];
-    
-    const newUser = {
-      id: Date.now(),
-      name: data.name,
-      email: data.email,
-      password: data.password || 'password123',
-      role: data.role || 'user',
-      created_at: new Date().toISOString()
-    };
-    
-    db.users.push(newUser);
-    writeDB(db);
+    const newUser = new User(body);
+    await newUser.save();
     
     return NextResponse.json(newUser, { status: 201 });
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+    console.error("API Users POST Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

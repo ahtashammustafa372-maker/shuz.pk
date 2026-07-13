@@ -1,32 +1,21 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'src/lib/db.json');
-
-function readDB() {
-  const fileData = fs.readFileSync(dbPath, 'utf8');
-  return JSON.parse(fileData);
-}
+import dbConnect from '../../../lib/mongoose';
+import User from '../../../models/User';
 
 export async function POST(request) {
   try {
-    const data = await request.json();
-    const { email, password } = data;
-    const db = readDB();
-    
-    if (!db.users) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    }
-    
-    const user = db.users.find(u => u.email === email && u.password === password && u.role === 'admin');
-    
+    await dbConnect();
+    const { email, password } = await request.json();
+
+    const user = await User.findOne({ email, password, role: 'admin' }).lean();
+
     if (user) {
-      return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } }, { status: 200 });
+      return NextResponse.json({ success: true, user: { name: user.name, email: user.email, role: user.role } });
     } else {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
     }
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to authenticate' }, { status: 500 });
+    console.error("API Login POST Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

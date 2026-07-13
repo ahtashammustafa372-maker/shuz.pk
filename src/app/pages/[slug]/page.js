@@ -1,6 +1,9 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-const db = require('../../../lib/db');
+import dbConnect from '@/src/lib/mongoose';
+import Setting from '@/src/models/Setting';
+import Product from '@/src/models/Product';
+import Page from '@/src/models/Page';
 
 export default async function PageView({ params }) {
   const { slug } = await params;

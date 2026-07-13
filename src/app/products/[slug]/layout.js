@@ -1,4 +1,7 @@
-import db from '../../../lib/db';
+import dbConnect from '@/src/lib/mongoose';
+import Setting from '@/src/models/Setting';
+import Product from '@/src/models/Product';
+import Page from '@/src/models/Page';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;

@@ -1,52 +1,38 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'src/lib/db.json');
-
-function readDB() {
-  const fileData = fs.readFileSync(dbPath, 'utf8');
-  return JSON.parse(fileData);
-}
-
-function writeDB(data) {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-}
+import dbConnect from '../../../../lib/mongoose';
+import User from '../../../../models/User';
 
 export async function PUT(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
     const data = await request.json();
-    const db = readDB();
     
-    if (!db.users) db.users = [];
-    
-    const index = db.users.findIndex(item => item.id == id);
-    if (index === -1) {
+    const updated = await User.findByIdAndUpdate(id, data, { new: true }).lean();
+    if (!updated) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     
-    db.users[index] = { ...db.users[index], ...data };
-    writeDB(db);
-    
-    return NextResponse.json(db.users[index]);
+    return NextResponse.json(updated);
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
+    console.error("API User PUT Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function DELETE(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
-    const db = readDB();
     
-    if (!db.users) db.users = [];
-    
-    db.users = db.users.filter(item => item.id != id);
-    writeDB(db);
+    const deleted = await User.findByIdAndDelete(id);
+    if (!deleted) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
     
     return NextResponse.json({ success: true });
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
+    console.error("API User DELETE Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

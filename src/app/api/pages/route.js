@@ -1,30 +1,35 @@
 import { NextResponse } from 'next/server';
+import dbConnect from '../../../lib/mongoose';
+import Page from '../../../models/Page';
 
 export const dynamic = 'force-dynamic';
-import db from '../../../lib/db';
 
-export async function GET(request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type');
-    
-    let pages = db.getPages();
-    if (type) {
-      pages = pages.filter(p => p.type === type);
-    }
-    
-    return NextResponse.json(pages, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch pages' }, { status: 500 });
+    await dbConnect();
+    const pages = await Page.find({}).sort({ created_at: -1 }).lean();
+    return NextResponse.json(pages);
+  } catch (err) {
+    console.error("API Pages GET Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function POST(request) {
   try {
+    await dbConnect();
     const body = await request.json();
-    const newPage = db.createPage(body);
+    
+    if (!body.title || !body.slug || !body.content) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const newPage = new Page(body);
+    await newPage.save();
+    
     return NextResponse.json(newPage, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to create page' }, { status: 500 });
+  } catch (err) {
+    console.error("API Pages POST Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

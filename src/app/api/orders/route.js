@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
-const db = require('../../../lib/db');
+import dbConnect from '../../../lib/mongoose';
+import Order from '../../../models/Order';
+import Notification from '../../../models/Notification';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const orders = db.getOrders();
+    await dbConnect();
+    const orders = await Order.find({}).sort({ created_at: -1 }).lean();
     return NextResponse.json(orders);
   } catch (err) {
     console.error("API Orders GET Error:", err);
@@ -13,29 +18,36 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    await dbConnect();
     const body = await request.json();
     
-    // Validate inputs
     if (!body.customerName || !body.customerPhone || !body.shippingAddress || !body.shippingCity || !body.items || body.items.length === 0) {
-      return NextResponse.json({ error: 'Missing required order fields: name, phone, address, city, and items' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required order fields' }, { status: 400 });
     }
 
-    const orderData = {
-      customerName: body.customerName,
-      customerPhone: body.customerPhone,
-      customerEmail: body.customerEmail || "",
-      shippingAddress: body.shippingAddress,
-      shippingCity: body.shippingCity,
-      shippingProvince: body.shippingProvince || "Punjab",
-      paymentMethod: body.paymentMethod || "Cash on Delivery",
-      subtotal: parseFloat(body.subtotal),
-      shippingFee: parseFloat(body.shippingFee),
-      total: parseFloat(body.total),
-      items: body.items // Array of items ordered
-    };
+    const count = await Order.countDocuments();
+    const orderId = `#${1001 + count}`;
 
-    const newOrder = db.createOrder(orderData);
-    db.addNotification('New Order Received', `Order #${newOrder.id} placed by ${newOrder.customerName}.`, 'order', '/admin');
+    const newOrder = new Order({
+      orderId,
+      customerName: body.customerName,
+      phone: body.customerPhone,
+      address: body.shippingAddress,
+      city: body.shippingCity,
+      total: parseFloat(body.total),
+      items: body.items,
+      payment_method: body.paymentMethod || 'COD'
+    });
+
+    await newOrder.save();
+    
+    await Notification.create({
+      title: 'New Order Received',
+      message: `Order ${orderId} placed by ${body.customerName}.`,
+      type: 'order',
+      link: '/admin'
+    });
+
     return NextResponse.json(newOrder, { status: 201 });
   } catch (err) {
     console.error("API Orders POST Error:", err);

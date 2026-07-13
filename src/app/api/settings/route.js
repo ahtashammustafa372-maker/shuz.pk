@@ -1,36 +1,48 @@
 import { NextResponse } from 'next/server';
+import dbConnect from '../../../lib/mongoose';
+import Setting from '../../../models/Setting';
 
 export const dynamic = 'force-dynamic';
-import fs from 'fs';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'src/lib/db.json');
-
-function readDB() {
-  const fileData = fs.readFileSync(dbPath, 'utf8');
-  return JSON.parse(fileData);
-}
-
-function writeDB(data) {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-}
 
 export async function GET() {
-  const db = readDB();
-  return NextResponse.json(db.settings || { slider: [], theme: {}, general: {} });
+  try {
+    await dbConnect();
+    const settingsDocs = await Setting.find({}).lean();
+    
+    // Transform array of { type: 'xyz', data: {} } back to { xyz: {} } object
+    const settings = {};
+    settingsDocs.forEach(doc => {
+      settings[doc.type] = doc.data;
+    });
+
+    return NextResponse.json(settings);
+  } catch (err) {
+    console.error("API Settings GET Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
-export async function PUT(request) {
+export async function POST(request) {
   try {
+    await dbConnect();
     const data = await request.json();
-    const db = readDB();
     
-    // We expect the payload to be the full settings object or partial updates
-    db.settings = { ...db.settings, ...data };
+    // Update each key in settings
+    for (const [key, value] of Object.entries(data)) {
+      await Setting.findOneAndUpdate(
+        { type: key },
+        { data: value },
+        { upsert: true, new: true }
+      );
+    }
     
-    writeDB(db);
-    return NextResponse.json(db.settings);
+    const updatedDocs = await Setting.find({}).lean();
+    const updatedSettings = {};
+    updatedDocs.forEach(doc => { updatedSettings[doc.type] = doc.data; });
+    
+    return NextResponse.json(updatedSettings);
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
+    console.error("API Settings POST Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

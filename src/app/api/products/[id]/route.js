@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server';
-const db = require('../../../../lib/db');
+import dbConnect from '../../../../lib/mongoose';
+import Product from '../../../../models/Product';
 
 export async function PUT(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
     const body = await request.json();
     
-    const updatedProduct = db.updateProduct(id, body);
-    if (!updatedProduct) {
+    // Convert _id strings if needed, though Mongoose handles hex strings naturally
+    const updated = await Product.findByIdAndUpdate(id, body, { new: true }).lean();
+    if (!updated) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
     
-    return NextResponse.json(updatedProduct);
+    return NextResponse.json(updated);
   } catch (err) {
     console.error("API Product PUT Error:", err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -20,9 +23,11 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
-    const success = db.deleteProduct(id);
-    if (!success) {
+    
+    const deleted = await Product.findByIdAndDelete(id);
+    if (!deleted) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
     

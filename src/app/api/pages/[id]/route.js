@@ -1,51 +1,38 @@
 import { NextResponse } from 'next/server';
-import db from '../../../../lib/db';
-
-export async function GET(request, { params }) {
-  try {
-    const { id } = await params;
-    // Assuming the id here might be a slug or ID based on how it's called
-    // We'll support ID. The frontend dynamic route uses slug.
-    const pages = db.getPages();
-    const page = pages.find(p => p.id === parseInt(id));
-    
-    if (!page) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
-    }
-    
-    return NextResponse.json(page, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch page' }, { status: 500 });
-  }
-}
+import dbConnect from '../../../../lib/mongoose';
+import Page from '../../../../models/Page';
 
 export async function PUT(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
     const body = await request.json();
-    const updatedPage = db.updatePage(id, body);
     
-    if (!updatedPage) {
+    const updated = await Page.findByIdAndUpdate(id, body, { new: true }).lean();
+    if (!updated) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
     
-    return NextResponse.json(updatedPage, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update page' }, { status: 500 });
+    return NextResponse.json(updated);
+  } catch (err) {
+    console.error("API Page PUT Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function DELETE(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
-    const success = db.deletePage(id);
     
-    if (!success) {
+    const deleted = await Page.findByIdAndDelete(id);
+    if (!deleted) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
     
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to delete page' }, { status: 500 });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("API Page DELETE Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

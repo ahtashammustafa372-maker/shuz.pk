@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
-const db = require('../../../../lib/db');
+import dbConnect from '../../../../lib/mongoose';
+import Return from '../../../../models/Return';
 
 export async function PUT(request, { params }) {
   try {
+    await dbConnect();
     const { id } = await params;
     const body = await request.json();
     
@@ -10,15 +12,14 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: 'Status is required' }, { status: 400 });
     }
 
-    const updatedReturn = db.updateReturnStatus(id, body.status);
-    
-    if (!updatedReturn) {
+    const updated = await Return.findByIdAndUpdate(id, { status: body.status }, { new: true }).lean();
+    if (!updated) {
       return NextResponse.json({ error: 'Return not found' }, { status: 404 });
     }
 
-    return NextResponse.json(updatedReturn);
+    return NextResponse.json(updated);
   } catch (err) {
-    console.error("API Returns PUT Error:", err);
+    console.error("API Return PUT Error:", err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

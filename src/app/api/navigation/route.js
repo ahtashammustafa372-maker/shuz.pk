@@ -1,44 +1,39 @@
 import { NextResponse } from 'next/server';
+import dbConnect from '../../../lib/mongoose';
+import NavigationItem from '../../../models/NavigationItem';
 
 export const dynamic = 'force-dynamic';
-import fs from 'fs';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'src/lib/db.json');
-
-function readDB() {
-  const fileData = fs.readFileSync(dbPath, 'utf8');
-  return JSON.parse(fileData);
-}
-
-function writeDB(data) {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-}
 
 export async function GET() {
-  const db = readDB();
-  return NextResponse.json(db.navbar || []);
+  try {
+    await dbConnect();
+    const items = await NavigationItem.find({}).sort({ order: 1 }).lean();
+    return NextResponse.json(items);
+  } catch (err) {
+    console.error("API Navigation GET Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
 export async function POST(request) {
   try {
+    await dbConnect();
     const data = await request.json();
-    const db = readDB();
     
-    if (!db.navbar) db.navbar = [];
+    if (!data.label || !data.url) {
+      return NextResponse.json({ error: 'Label and URL are required' }, { status: 400 });
+    }
+
+    const count = await NavigationItem.countDocuments();
+    const newItem = new NavigationItem({
+      ...data,
+      order: data.order || count + 1
+    });
     
-    const newItem = {
-      id: Date.now(),
-      label: data.label,
-      link: data.link,
-      order: data.order || db.navbar.length + 1
-    };
-    
-    db.navbar.push(newItem);
-    writeDB(db);
-    
+    await newItem.save();
     return NextResponse.json(newItem, { status: 201 });
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to create navigation item' }, { status: 500 });
+    console.error("API Navigation POST Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

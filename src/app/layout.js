@@ -2,10 +2,15 @@ import "./globals.css";
 import LayoutWrapper from '../components/LayoutWrapper';
 import { ThemeProvider } from '../context/ThemeContext';
 
-import db from '../lib/db';
+import dbConnect from '@/src/lib/mongoose';
+import Setting from '@/src/models/Setting';
+import Product from '@/src/models/Product';
+import Page from '@/src/models/Page';
 
 export async function generateMetadata() {
-  const settings = db.getSettings();
+  await dbConnect();
+  const settingsDoc = await Setting.findOne({ type: 'seo' }).lean();
+  const settings = { seo: settingsDoc ? settingsDoc.data : {} };
   const seo = settings?.seo || {};
 
   const keywordsStr = [seo.keywords, seo.tags].filter(Boolean).join(', ');
