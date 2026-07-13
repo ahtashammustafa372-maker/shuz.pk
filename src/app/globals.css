@@ -2863,6 +2863,11 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+.product-description-html {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .product-description-html ul,
 .product-description-html ol {
   list-style: inherit;

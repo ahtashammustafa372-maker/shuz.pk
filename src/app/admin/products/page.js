@@ -8,6 +8,17 @@ import 'react-quill-new/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
+const quillModules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link'],
+    ['clean']
+  ],
+};
+
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -371,7 +382,7 @@ export default function AdminProducts() {
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Description</label>
                 <div style={{ backgroundColor: '#fff' }}>
-                  <ReactQuill theme="snow" value={newDescription} onChange={setNewDescription} />
+                  <ReactQuill theme="snow" modules={quillModules} value={newDescription} onChange={setNewDescription} />
                 </div>
               </div>
               <SeoEditorBox seoData={newSeo} onChange={setNewSeo} />
@@ -469,7 +480,7 @@ export default function AdminProducts() {
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Description</label>
                 <div style={{ backgroundColor: '#fff' }}>
-                  <ReactQuill theme="snow" value={editingProduct.description} onChange={(val) => setEditingProduct({...editingProduct, description: val})} />
+                  <ReactQuill theme="snow" modules={quillModules} value={editingProduct.description} onChange={(val) => setEditingProduct({...editingProduct, description: val})} />
                 </div>
               </div>
               <SeoEditorBox seoData={editingProduct.seo || { title: '', description: '', keywords: '', ogImage: '' }} onChange={(seo) => setEditingProduct({...editingProduct, seo})} />
