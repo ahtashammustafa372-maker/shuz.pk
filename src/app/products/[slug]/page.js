@@ -219,7 +219,7 @@ export default function ProductDetailPage() {
                        onClick={() => window.location.href = `/products/${sibling.slug}`}
                        title={siblingColor}
                        style={{
-                         width: '65px', height: '65px', borderRadius: '50%', overflow: 'hidden',
+                         width: '85px', height: '85px', borderRadius: '50%', overflow: 'hidden',
                          padding: 0, border: sibling.id === product.id ? '2px solid var(--color-primary)' : '2px solid transparent',
                          boxShadow: sibling.id === product.id ? '0 0 0 2px #fff inset' : '0 1px 3px rgba(0,0,0,0.1)',
                          cursor: 'pointer', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
