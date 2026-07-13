@@ -60,8 +60,8 @@ export default function AdminOrders() {
           </thead>
           <tbody>
             {orders.map(order => (
-              <tr key={order.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
-                <td style={{ padding: '15px', fontWeight: '500' }}>#{order.id}</td>
+              <tr key={order._id || order.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
+                <td style={{ padding: '15px', fontWeight: '500' }}>#{order._id || order.id}</td>
                 <td style={{ padding: '15px' }}>
                   <div style={{ fontWeight: '600', color: '#18181b', fontSize: '14px' }}>{order.customerName}</div>
                   <div style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>
@@ -92,7 +92,7 @@ export default function AdminOrders() {
                 <td style={{ padding: '15px' }}>
                   <select 
                     value={order.status}
-                    onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
+                    onChange={(e) => handleUpdateStatus(order._id || order.id, e.target.value)}
                     style={{ padding: '6px 10px', borderRadius: '6px', border: '1px solid #e4e4e7', fontSize: '13px', backgroundColor: '#fff' }}
                   >
                     <option value="Pending">Pending</option>

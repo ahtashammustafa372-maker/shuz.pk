@@ -41,7 +41,7 @@ export default function AdminReturns() {
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`/api/returns/${editingReturn.id}`, {
+      const res = await fetch(`/api/returns/${editingReturn._id || editingReturn.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: editingReturn.status })
@@ -107,8 +107,8 @@ export default function AdminReturns() {
               <tr><td colSpan="7" style={{ textAlign: 'center', padding: '30px', color: '#71717a' }}>No returns found.</td></tr>
             ) : (
               filteredReturns.map(ret => (
-                <tr key={ret.id} style={{ borderBottom: '1px solid #e4e4e7' }}>
-                  <td style={{ padding: '15px 20px', fontSize: '14px', color: '#3f3f46' }}>#{ret.id}</td>
+                <tr key={ret._id || ret.id} style={{ borderBottom: '1px solid #e4e4e7' }}>
+                  <td style={{ padding: '15px 20px', fontSize: '14px', color: '#3f3f46' }}>#{ret._id || ret.id}</td>
                   <td style={{ padding: '15px 20px', fontSize: '14px', color: '#3f3f46', fontWeight: '500' }}>#{ret.order_id}</td>
                   <td style={{ padding: '15px 20px', fontSize: '14px' }}>
                     <div style={{ fontWeight: '500', color: '#18181b' }}>{ret.customer_name}</div>

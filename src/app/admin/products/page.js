@@ -196,7 +196,7 @@ export default function AdminProducts() {
         }).filter(s => s !== null);
       }
 
-      const res = await fetch(`/api/products/${editingProduct.id}`, {
+      const res = await fetch(`/api/products/${editingProduct._id || editingProduct.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -255,7 +255,7 @@ export default function AdminProducts() {
               </tr>
             ) : (
               filteredProducts.map(p => (
-                <tr key={p.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
+                <tr key={p._id || p.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
                   <td style={{ padding: '15px' }}><img src={p.images?.[0] || '/images/sneaker_black.jpg'} alt={p.title} style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} /></td>
                 <td style={{ padding: '15px' }}>
                   <strong style={{ display: 'block', color: '#18181b', fontSize: '14px' }}>{p.title}</strong>
@@ -270,7 +270,7 @@ export default function AdminProducts() {
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <button onClick={() => setEditingProduct(p)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: '5px' }} title="Edit"><Edit2 size={16} /></button>
                     <button onClick={() => handleDuplicateProduct(p)} style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', padding: '5px' }} title="Duplicate"><Copy size={16} /></button>
-                    <button onClick={() => handleDeleteProduct(p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }} title="Delete"><Trash2 size={16} /></button>
+                    <button onClick={() => handleDeleteProduct(p._id || p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }} title="Delete"><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>

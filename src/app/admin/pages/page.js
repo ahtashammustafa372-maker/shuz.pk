@@ -82,7 +82,7 @@ export default function AdminPages() {
     e.preventDefault();
     
     try {
-      const url = editingPage ? `/api/pages/${editingPage.id}` : '/api/pages';
+      const url = editingPage ? `/api/pages/${editingPage._id || editingPage.id}` : '/api/pages';
       const method = editingPage ? 'PUT' : 'POST';
       
       const res = await fetch(url, {
@@ -153,8 +153,8 @@ export default function AdminPages() {
               <tr><td colSpan="5" style={{ padding: '30px', textAlign: 'center' }}>No pages found.</td></tr>
             ) : (
               pages.map((page) => (
-                <tr key={page.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                  <td style={{ padding: '15px 20px', fontSize: '14px', color: '#64748b' }}>#{page.id}</td>
+                <tr key={page._id || page.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '15px 20px', fontSize: '14px', color: '#64748b' }}>#{page._id || page.id}</td>
                   <td style={{ padding: '15px 20px', fontWeight: '500' }}>{page.title}</td>
                   <td style={{ padding: '15px 20px' }}>
                     <span style={{ 
@@ -175,7 +175,7 @@ export default function AdminPages() {
                       <Edit size={18} />
                     </button>
                     <button 
-                      onClick={() => handleDelete(page.id)}
+                      onClick={() => handleDelete(page._id || page.id)}
                       style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
                       title="Delete Page"
                     >

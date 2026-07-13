@@ -234,7 +234,7 @@ export default function HomePageSectionsAdmin() {
                 >
                   <option value="">-- Select a Product --</option>
                   {products.map(p => (
-                    <option key={p.id} value={p.slug}>{p.title} (Rs.{p.price})</option>
+                    <option key={p._id || p.id} value={p.slug}>{p.title} (Rs.{p.price})</option>
                   ))}
                 </select>
                 <button 

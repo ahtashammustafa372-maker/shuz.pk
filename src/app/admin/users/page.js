@@ -62,7 +62,7 @@ export default function AdminUsers() {
     const payload = { name, email, password, role };
     
     try {
-      const url = editingUser ? `/api/users/${editingUser.id}` : '/api/users';
+      const url = editingUser ? `/api/users/${editingUser._id || editingUser.id}` : '/api/users';
       const method = editingUser ? 'PUT' : 'POST';
       
       const res = await fetch(url, {
@@ -119,7 +119,7 @@ export default function AdminUsers() {
           </thead>
           <tbody>
             {users.map(u => (
-              <tr key={u.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
+              <tr key={u._id || u.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
                 <td style={{ padding: '15px', fontWeight: '600', color: '#18181b' }}>{u.name}</td>
                 <td style={{ padding: '15px', color: '#3f3f46' }}>{u.email}</td>
                 <td style={{ padding: '15px' }}>
@@ -134,7 +134,7 @@ export default function AdminUsers() {
                 <td style={{ padding: '15px' }}>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <button onClick={() => handleOpenEdit(u)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: '5px' }}><Edit2 size={16} /></button>
-                    <button onClick={() => handleDelete(u.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }}><Trash2 size={16} /></button>
+                    <button onClick={() => handleDelete(u._id || u.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>

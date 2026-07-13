@@ -125,7 +125,7 @@ export default function SliderAdmin() {
         {slider.map((slide, index) => (
           <div key={slide.id || index} style={{ border: '1px solid #e5e7eb', padding: '20px', borderRadius: '8px', backgroundColor: '#fff', position: 'relative' }}>
             <button 
-              onClick={() => handleRemoveSlide(slide.id)}
+              onClick={() => handleRemoveSlide(slide._id || slide.id)}
               style={{ position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
               title="Remove Slide"
             >
