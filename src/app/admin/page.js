@@ -118,9 +118,9 @@ export default function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {stats.recentOrders.length > 0 ? stats.recentOrders.map(order => (
-              <tr key={order.id} style={{ borderBottom: '1px solid #f4f4f5', fontSize: '14px' }}>
-                <td style={{ padding: '12px', fontWeight: '500' }}>#{order.id}</td>
+            {stats.recentOrders.length > 0 ? stats.recentOrders.map((order, index) => (
+              <tr key={order._id || order.id || index} style={{ borderBottom: '1px solid #f4f4f5', fontSize: '14px' }}>
+                <td style={{ padding: '12px', fontWeight: '500' }}>#{order._id || order.id}</td>
                 <td style={{ padding: '12px' }}>{order.customerName}</td>
                 <td style={{ padding: '12px' }}>Rs. {order.total.toLocaleString()}</td>
                 <td style={{ padding: '12px' }}>
