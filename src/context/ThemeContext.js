@@ -7,6 +7,7 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [themeSettings, setThemeSettings] = useState(null);
   const [generalSettings, setGeneralSettings] = useState(null);
+  const [headerSettings, setHeaderSettings] = useState(null);
 
   useEffect(() => {
     async function fetchTheme() {
@@ -17,6 +18,7 @@ export function ThemeProvider({ children }) {
           if (data.theme) {
             setThemeSettings(data.theme);
             setGeneralSettings(data.general);
+            if (data.header) setHeaderSettings(data.header);
             
             // Inject CSS variables into document root
             const root = document.documentElement;
@@ -48,7 +50,7 @@ export function ThemeProvider({ children }) {
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ themeSettings, generalSettings }}>
+    <ThemeContext.Provider value={{ themeSettings, generalSettings, headerSettings }}>
       {children}
     </ThemeContext.Provider>
   );

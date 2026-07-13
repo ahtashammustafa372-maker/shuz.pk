@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
-import { Search, ShoppingBag, Menu, X, User, Heart, ChevronDown } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, User, Heart, ChevronDown, Phone, Mail, Twitter } from 'lucide-react';
 
 const InstagramIcon = ({ size = 24, color = "currentColor" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -26,7 +26,7 @@ import { useTheme } from '../context/ThemeContext';
 export default function Header() {
   const { setCartOpen, cartCount } = useCart();
   const { wishlist } = useUser();
-  const { generalSettings } = useTheme();
+  const { generalSettings, headerSettings } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
 
@@ -100,6 +100,19 @@ export default function Header() {
     }
   };
 
+  const renderIcon = (iconName) => {
+    switch(iconName) {
+      case 'instagram': return <InstagramIcon size={16} />;
+      case 'facebook': return <FacebookIcon size={16} />;
+      case 'twitter': return <Twitter size={16} />;
+      case 'phone': return <Phone size={16} />;
+      case 'mail': return <Mail size={16} />;
+      default: return null;
+    }
+  };
+
+  const s = headerSettings || {};
+
   return (
     <>
       <header className="site-header">
@@ -107,14 +120,31 @@ export default function Header() {
         <div className="top-bar">
           <div className="top-bar-container">
             <div className="top-bar-left">
-              <a href="https://instagram.com" className="social-link-top"><InstagramIcon size={16} /> 163k Followers</a>
-              <a href="https://facebook.com" className="social-link-top"><FacebookIcon size={16} /> 8k Followers</a>
+              {(s.topBarLeftText1 || s.topBarLeftText2) ? (
+                <>
+                  {s.topBarLeftText1 && (
+                    <a href={s.topBarLeftLink1 || '#'} className="social-link-top">
+                      {renderIcon(s.topBarLeftIcon1)} {s.topBarLeftText1}
+                    </a>
+                  )}
+                  {s.topBarLeftText2 && (
+                    <a href={s.topBarLeftLink2 || '#'} className="social-link-top">
+                      {renderIcon(s.topBarLeftIcon2)} {s.topBarLeftText2}
+                    </a>
+                  )}
+                </>
+              ) : (
+                <>
+                  <a href="https://instagram.com" className="social-link-top"><InstagramIcon size={16} /> 163k Followers</a>
+                  <a href="https://facebook.com" className="social-link-top"><FacebookIcon size={16} /> 8k Followers</a>
+                </>
+              )}
             </div>
             <div className="top-bar-center">
-              Free Shipping all Over Pakistan
+              {s.topBarCenterText || 'Free Shipping all Over Pakistan'}
             </div>
             <div className="top-bar-right">
-              Orders over 20,000 need a 10% advance.
+              {s.topBarRightText || 'Orders over 20,000 need a 10% advance.'}
             </div>
           </div>
         </div>
@@ -214,7 +244,7 @@ export default function Header() {
               <Link href="/">
                 {/* Fallback to text if the image URL is broken, but we try to load the actual logo from shuz.pk */}
                 <img
-                  src="/images/logo.png"
+                  src={s.logoUrl || "/images/logo.png"}
                   alt="JUTAY"
                   className="logo-img"
                   onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
