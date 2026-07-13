@@ -1,10 +1,11 @@
 import dbConnect from '@/src/lib/mongoose';
 import Setting from '@/src/models/Setting';
 import Product from '@/src/models/Product';
-import Page from '@/src/models/Page';
+import PageModel from '@/src/models/Page';
 
 export async function generateMetadata({ params }) {
-  const page = db.getPageBySlug(params.slug);
+  await dbConnect();
+  const page = await PageModel.findOne({ slug: params.slug }).lean();
   
   if (!page) {
     return {

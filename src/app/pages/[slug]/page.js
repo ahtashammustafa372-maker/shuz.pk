@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import dbConnect from '@/src/lib/mongoose';
 import Setting from '@/src/models/Setting';
 import Product from '@/src/models/Product';
-import Page from '@/src/models/Page';
+import PageModel from '@/src/models/Page';
 
 export default async function PageView({ params }) {
   const { slug } = await params;
@@ -11,7 +11,8 @@ export default async function PageView({ params }) {
   let pageData = null;
   
   try {
-    const pages = db.getPages();
+    await dbConnect();
+    const pages = await PageModel.find({}).lean();
     pageData = pages.find(p => p.slug === slug && p.type === 'page');
   } catch (err) {
     console.error("Failed to fetch page data:", err);
@@ -21,7 +22,8 @@ export default async function PageView({ params }) {
     notFound();
   }
 
-  const settings = db.getSettings();
+  const settingsDoc = await Setting.findOne({ type: "seo" }).lean();
+  const settings = settingsDoc ? settingsDoc.data : {};
   const contact = settings.contact || {
     address: "DHA Phase 5 Branch, Karach, See Our Stores",
     phone: "+92 323 2186889",

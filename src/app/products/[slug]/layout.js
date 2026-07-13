@@ -5,7 +5,8 @@ import Page from '@/src/models/Page';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const product = db.getProductBySlug(slug);
+  await dbConnect();
+  const product = await Product.findOne({ slug }).lean();
   
   if (!product) {
     return {

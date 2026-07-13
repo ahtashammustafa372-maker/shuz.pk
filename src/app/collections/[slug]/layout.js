@@ -10,7 +10,9 @@ export async function generateMetadata({ params }) {
   let ogImage = "/images/logo.png";
   
   if (collectionSlug !== 'all') {
-    const collections = db.getCollections();
+    await dbConnect();
+    const settingsDoc = await Setting.findOne({ type: 'collections' }).lean();
+    const collections = settingsDoc ? settingsDoc.data : [];
     const target = collections.find(c => c.slug === collectionSlug);
     if (target) {
       // Collections don't currently have an seo object in DB, but we could add one later.

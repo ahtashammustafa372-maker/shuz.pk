@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import dbConnect from '@/src/lib/mongoose';
 import Setting from '@/src/models/Setting';
 import Product from '@/src/models/Product';
-import Page from '@/src/models/Page';
+import PageModel from '@/src/models/Page';
 
 export default async function PolicyView({ params }) {
   const { slug } = await params;
@@ -11,7 +11,8 @@ export default async function PolicyView({ params }) {
   let pageData = null;
   
   try {
-    const pages = db.getPages();
+    await dbConnect();
+    const pages = await PageModel.find({}).lean();
     pageData = pages.find(p => p.slug === slug && p.type === 'policy');
   } catch (err) {
     console.error("Failed to fetch policy data:", err);
