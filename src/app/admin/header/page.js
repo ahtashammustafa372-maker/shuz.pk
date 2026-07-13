@@ -45,6 +45,39 @@ export default function AdminHeader() {
     setHeaderSettings(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setSaving(true);
+    setMessage({ text: 'Uploading image...', type: '' });
+    
+    const formData = new FormData();
+    formData.append('files', file);
+    
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.urls && data.urls.length > 0) {
+          setHeaderSettings(prev => ({ ...prev, logoUrl: data.urls[0] }));
+          setMessage({ text: 'Image uploaded successfully!', type: 'success' });
+        }
+      } else {
+        setMessage({ text: 'Failed to upload image.', type: 'error' });
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Error uploading image.', type: 'error' });
+    } finally {
+      setSaving(false);
+      setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -122,9 +155,15 @@ export default function AdminHeader() {
             value={headerSettings.logoUrl} 
             onChange={handleChange}
             placeholder="/images/logo.png or https://..."
-            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' }}
+            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', marginBottom: '10px' }}
           />
-          <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>Enter the full URL or a local path (e.g., /images/logo.png). Upload the image to a hosting service or your public folder.</p>
+          <input 
+            type="file" 
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: 'block', marginBottom: '10px' }}
+          />
+          <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>Upload a new logo image, or enter a full URL above.</p>
           {headerSettings.logoUrl && (
             <div style={{ marginTop: '15px', padding: '15px', border: '1px dashed #ccc', borderRadius: '6px', display: 'inline-block', backgroundColor: '#f9f9f9' }}>
                <img src={headerSettings.logoUrl} alt="Logo Preview" style={{ height: '50px', objectFit: 'contain' }} />
