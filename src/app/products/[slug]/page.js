@@ -183,7 +183,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Right Side: Meta Info & Actions */}
-        <div>
+        <div className="product-info">
           <span className="product-meta-vendor">{product.vendor}</span>
           <h1 className="product-meta-title">{product.title}</h1>
           

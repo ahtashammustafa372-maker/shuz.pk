@@ -1357,15 +1357,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-main-image-wrap {
-  aspect-ratio: 1;
   background-color: var(--color-background-secondary);
   width: 100%;
 }
 
 .product-main-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
 }
 
 .product-thumbnails {
@@ -1399,6 +1398,11 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 15px;
+}
+
+.product-info {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .product-meta-price {
@@ -2878,3 +2882,6 @@ h1, h2, h3, h4, h5, h6 {
 .product-description-html p {
   margin-bottom: 10px;
 }
+. p r o d u c t - i n f o  
+   m i n - w i d t h :   0 ;    
+ 
