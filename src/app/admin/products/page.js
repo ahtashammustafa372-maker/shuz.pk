@@ -158,6 +158,7 @@ export default function AdminProducts() {
     try {
       const payload = { ...product };
       delete payload.id;
+      delete payload._id;
       payload.title = payload.title + ' (Copy)';
       
       const res = await fetch('/api/products', {
