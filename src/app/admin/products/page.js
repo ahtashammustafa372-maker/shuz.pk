@@ -1,8 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Plus, Edit2, Trash2, X, Search, Copy } from 'lucide-react';
 import SeoEditorBox from '../../../components/admin/SeoEditorBox';
+import 'react-quill-new/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -366,7 +370,9 @@ export default function AdminProducts() {
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Description</label>
-                <textarea rows="4" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={newDescription} onChange={e => setNewDescription(e.target.value)}></textarea>
+                <div style={{ backgroundColor: '#fff' }}>
+                  <ReactQuill theme="snow" value={newDescription} onChange={setNewDescription} />
+                </div>
               </div>
               <SeoEditorBox seoData={newSeo} onChange={setNewSeo} />
               <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', marginTop: '20px' }}>Save Product</button>
@@ -462,7 +468,9 @@ export default function AdminProducts() {
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Description</label>
-                <textarea rows="4" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.description} onChange={e => setEditingProduct({...editingProduct, description: e.target.value})}></textarea>
+                <div style={{ backgroundColor: '#fff' }}>
+                  <ReactQuill theme="snow" value={editingProduct.description} onChange={(val) => setEditingProduct({...editingProduct, description: val})} />
+                </div>
               </div>
               <SeoEditorBox seoData={editingProduct.seo || { title: '', description: '', keywords: '', ogImage: '' }} onChange={(seo) => setEditingProduct({...editingProduct, seo})} />
               <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', marginTop: '20px' }}>Update Product</button>

@@ -17,7 +17,8 @@ export async function generateMetadata({ params }) {
   // Use product SEO object or fallback to product details
   const seo = product.seo || {};
   const title = seo.title || `${product.title} - Shuz.pk`;
-  const description = seo.description || product.description;
+  const rawDescription = seo.description || product.description || '';
+  const description = rawDescription.replace(/<[^>]*>?/gm, '');
   const keywordsStr = [seo.keywords || `${product.category_slug}, ${product.vendor}, sneakers`, seo.tags].filter(Boolean).join(', ');
   const ogImage = seo.ogImage || (product.images && product.images[0]) || '/images/logo.png';
 

@@ -314,7 +314,7 @@ export default function ProductDetailPage() {
                 {accordions.description ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </div>
               <div className="accordion-content">
-                <p>{product.description}</p>
+                <div dangerouslySetInnerHTML={{ __html: product.description || '' }} className="product-description-html" style={{ lineHeight: '1.6' }} />
                 <p style={{ marginTop: '10px' }}>
                   <strong>Batch details:</strong> Premium replica, manufactured with high density fabrics and rubbers for a close 1:1 match to original aesthetics.
                 </p>
