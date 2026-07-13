@@ -69,8 +69,11 @@ export default function ProductDetailPage() {
           const target = list.find(p => p.slug === productSlug);
           
           if (target) {
+            if (target.images && Array.isArray(target.images)) {
+              target.images = target.images.flatMap(img => typeof img === 'string' ? img.split(/[\n,]+/).map(i => i.trim()).filter(Boolean) : img);
+            }
             setProduct(target);
-            setSelectedSize(target.sizes[0]);
+            setSelectedSize(target.sizes && target.sizes.length > 0 ? target.sizes[0] : null);
             setSelectedColor(target.colors[0]);
             
             // Load recommendations (same category, excluding current product)
