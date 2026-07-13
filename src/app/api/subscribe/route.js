@@ -55,3 +55,6 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Failed to process subscription' }, { status: 500 });
   }
 }
+
+
+export { POST as PUT };

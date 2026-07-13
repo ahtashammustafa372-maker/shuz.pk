@@ -42,7 +42,9 @@ export async function POST(request) {
     
     return NextResponse.json(updatedSettings);
   } catch (err) {
-    console.error("API Settings POST Error:", err);
+    console.error("API Settings POST/PUT Error:", err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export { POST as PUT };
