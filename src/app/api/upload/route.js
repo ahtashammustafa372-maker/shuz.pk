@@ -36,8 +36,8 @@ export async function POST(request) {
 
     return NextResponse.json({ urls: uploadedUrls });
   } catch (error) {
-    console.error('Error uploading files:', error);
-    return NextResponse.json({ error: 'Failed to upload files' }, { status: 500 });
+    console.error('Error uploading files:', error.message || error);
+    return NextResponse.json({ error: error.message || 'Unknown error' }, { status: 500 });
   }
 }
 
