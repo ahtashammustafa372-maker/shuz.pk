@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { Plus, Edit2, Trash2, X, Search, Copy } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Search, Copy, Eye } from 'lucide-react';
 import SeoEditorBox from '../../../components/admin/SeoEditorBox';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -283,6 +283,7 @@ export default function AdminProducts() {
                 </td>
                 <td style={{ padding: '15px' }}>
                   <div style={{ display: 'flex', gap: '10px' }}>
+                    <a href={`/products/${p.slug || p._id || p.id}`} target="_blank" rel="noopener noreferrer" style={{ background: 'none', border: 'none', color: '#8b5cf6', cursor: 'pointer', padding: '5px', display: 'inline-flex', alignItems: 'center' }} title="View"><Eye size={16} /></a>
                     <button onClick={() => setEditingProduct(p)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: '5px' }} title="Edit"><Edit2 size={16} /></button>
                     <button onClick={() => handleDuplicateProduct(p)} style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', padding: '5px' }} title="Duplicate"><Copy size={16} /></button>
                     <button onClick={() => handleDeleteProduct(p._id || p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }} title="Delete"><Trash2 size={16} /></button>
