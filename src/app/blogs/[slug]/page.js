@@ -32,7 +32,14 @@ export default async function Page({ params }) {
       </div>
       <div 
         className="page-content blog-content" 
-        style={{ maxWidth: '800px', margin: '40px auto 0', fontSize: '18px', lineHeight: '1.8' }}
+        style={{ 
+          maxWidth: '800px', 
+          margin: '40px auto 0', 
+          fontSize: '18px', 
+          lineHeight: '1.8',
+          overflowWrap: 'break-word', 
+          wordWrap: 'break-word' 
+        }}
         dangerouslySetInnerHTML={{ __html: pageData.content }}
       />
     </div>

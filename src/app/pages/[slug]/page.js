@@ -102,7 +102,14 @@ export default async function PageView({ params }) {
       ) : (
         <div 
           className="page-content" 
-          style={{ fontSize: '16px', lineHeight: '1.8' }}
+          style={{ 
+            fontSize: '16px', 
+            lineHeight: '1.8', 
+            maxWidth: '1000px', 
+            margin: '0 auto', 
+            overflowWrap: 'break-word', 
+            wordWrap: 'break-word' 
+          }}
           dangerouslySetInnerHTML={{ __html: pageData.content }}
         />
       )}
