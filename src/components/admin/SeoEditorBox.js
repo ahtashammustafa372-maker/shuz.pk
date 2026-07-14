@@ -4,11 +4,44 @@ import React from 'react';
 import { Search, Image as ImageIcon } from 'lucide-react';
 
 export default function SeoEditorBox({ seoData, onChange }) {
+  const [isUploading, setIsUploading] = React.useState(false);
+
   const handleChange = (field, value) => {
     onChange({
       ...seoData,
       [field]: value
     });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('files', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.urls && data.urls.length > 0) {
+          handleChange('ogImage', data.urls[0]);
+        }
+      } else {
+        alert('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Error uploading image');
+    } finally {
+      setIsUploading(false);
+      e.target.value = '';
+    }
   };
 
   const currentTitle = seoData?.title || '';
@@ -157,15 +190,34 @@ export default function SeoEditorBox({ seoData, onChange }) {
           <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#334155' }}>
             <ImageIcon size={16} color="#64748b" /> Social Sharing Image (OpenGraph)
           </label>
-          <input 
-            type="text" 
-            style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
-            value={seoData?.ogImage || ''}
-            onChange={(e) => handleChange('ogImage', e.target.value)}
-            placeholder="/images/logo.png or https://... "
-            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-            onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
-          />
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <input 
+              type="text" 
+              style={{ flex: 1, padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
+              value={seoData?.ogImage || ''}
+              onChange={(e) => handleChange('ogImage', e.target.value)}
+              placeholder="/images/logo.png or https://... "
+              onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+              onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
+            />
+            <div style={{ position: 'relative' }}>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleImageUpload} 
+                disabled={isUploading} 
+                title="Upload Image"
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer', zIndex: 10 }}
+              />
+              <button 
+                type="button" 
+                style={{ padding: '10px 15px', backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                disabled={isUploading}
+              >
+                {isUploading ? 'Uploading...' : 'Upload Image'}
+              </button>
+            </div>
+          </div>
           <small style={{ color: '#64748b', marginTop: '6px', display: 'block', fontSize: '12px' }}>
             This image appears when the page is shared on Facebook, Twitter, WhatsApp, etc.
           </small>
