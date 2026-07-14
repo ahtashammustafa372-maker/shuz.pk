@@ -112,7 +112,7 @@ export default function Home() {
             <SwiperSlide key={slide.id}>
               <div className="hero-slide active" style={{ width: '100%', display: 'block' }}>
                 <Link href={slide.link} style={{ display: 'block', width: '100%' }}>
-                  <img src={slide.image} alt="Slider Banner" className="hero-slide-image" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                  <img src={slide.image} alt="Hero Promotion" className="hero-slide-image" style={{ width: '100%', height: 'auto', display: 'block' }} />
                 </Link>
               </div>
             </SwiperSlide>
@@ -180,7 +180,7 @@ export default function Home() {
           <Link href={homepageSettings.middleBanner.link || '#'} style={{ display: 'block', width: '100%' }}>
             <img 
               src={homepageSettings.middleBanner.image} 
-              alt="Promotional Banner" 
+              alt="Promotional Image" 
               style={{ width: '100%', height: 'auto', display: 'block' }} 
             />
           </Link>
