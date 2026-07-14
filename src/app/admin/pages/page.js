@@ -1,8 +1,23 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Plus, Edit, Trash2, X, Save } from 'lucide-react';
 import SeoEditorBox from '../../../components/admin/SeoEditorBox';
+import 'react-quill-new/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+
+const quillModules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'image'],
+    ['clean']
+  ],
+};
 
 export default function AdminPages() {
   const [pages, setPages] = useState([]);
@@ -247,15 +262,14 @@ export default function AdminPages() {
 
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '14px' }}>Content (HTML) *</label>
-                  <textarea 
-                    name="content" 
+                  <ReactQuill 
+                    theme="snow"
+                    modules={quillModules}
                     value={formData.content} 
-                    onChange={handleChange} 
-                    required
-                    rows={12}
-                    style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '4px', fontFamily: 'monospace' }}
-                    placeholder="<h2>Heading</h2><p>Paragraph content...</p>"
-                  ></textarea>
+                    onChange={(content) => setFormData({...formData, content})} 
+                    placeholder="Write content here..."
+                    style={{ height: '300px', marginBottom: '40px' }}
+                  />
                 </div>
                 
                 <SeoEditorBox seoData={formData.seo} onChange={(seo) => setFormData(prev => ({...prev, seo}))} />
