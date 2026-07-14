@@ -20,12 +20,15 @@ export default async function HomePage() {
       _id: p._id ? p._id.toString() : p.id
     }));
 
-    const settingsDoc = await Setting.findOne({ type: 'homepage' }).lean();
-    if (settingsDoc && settingsDoc.data) {
-      slider = settingsDoc.data.slider || [];
-      categoryBoxes = settingsDoc.data.categoryBoxes || [];
-      homepageSettings = settingsDoc.data.homepage || null;
-    }
+    const settingsDocs = await Setting.find({}).lean();
+    const settings = {};
+    settingsDocs.forEach(doc => {
+      settings[doc.type] = doc.data;
+    });
+    
+    slider = settings.slider || [];
+    categoryBoxes = settings.categoryBoxes || [];
+    homepageSettings = settings.homepage || null;
   } catch (error) {
     console.error('Failed to fetch initial data for home page', error);
   }
