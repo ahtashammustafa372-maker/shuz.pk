@@ -55,7 +55,8 @@ export default function PerfectMatchAdmin() {
 
   const handleAddSize = () => {
     if (!newSize.trim()) return;
-    const updatedSizes = [...sizes, newSize.trim()];
+    const newSizesList = newSize.split(',').map(s => s.trim()).filter(s => s !== '');
+    const updatedSizes = [...sizes, ...newSizesList];
     saveSizes(updatedSizes);
     setNewSize('');
   };

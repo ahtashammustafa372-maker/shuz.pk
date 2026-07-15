@@ -372,12 +372,12 @@ export default function HomeClient({
       {/* Your Perfect Match Section */}
       {perfectMatchSizes && perfectMatchSizes.length > 0 && (
         <section className="fluid-container" style={{ padding: '40px 0 20px 0' }}>
-          <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <h2 className="section-title" style={{ fontSize: '36px', fontWeight: '400', margin: '0 0 10px 0' }}>Your Perfect Match</h2>
-            <div style={{ width: '250px', height: '1px', backgroundColor: '#000', margin: '0 auto' }}></div>
+          <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <h2 className="section-title" style={{ fontSize: '42px', fontWeight: '400', margin: '0 0 10px 0', letterSpacing: '1px' }}>Your Perfect Match</h2>
+            <div style={{ width: '400px', height: '1px', backgroundColor: '#000', margin: '0 auto' }}></div>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '30px', padding: '0 15px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '40px', padding: '0 15px' }}>
             {perfectMatchSizes.map((size, index) => {
               const isSelected = selectedPerfectMatchSize === size;
               return (
@@ -385,18 +385,18 @@ export default function HomeClient({
                   key={index} 
                   onClick={() => setSelectedPerfectMatchSize(isSelected ? null : size)}
                   style={{ 
-                    border: '1px solid #e4e4e7', 
-                    padding: '8px 0', 
-                    width: '75px', 
+                    border: '1px solid #eaeaea', 
+                    padding: '20px 0', 
+                    width: '85px', 
                     textAlign: 'center', 
                     cursor: 'pointer', 
-                    backgroundColor: isSelected ? '#a1a1aa' : '#fff',
+                    backgroundColor: isSelected ? '#a3a3a3' : '#fff',
                     transition: 'all 0.2s',
-                    boxShadow: '0 2px 5px rgba(0,0,0,0.03)'
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
                   }}
                 >
-                  <div style={{ fontSize: '10px', color: isSelected ? '#fff' : '#71717a', fontWeight: '700', marginBottom: '2px' }}>EUR</div>
-                  <div style={{ fontSize: '24px', fontWeight: '500', color: isSelected ? '#fff' : '#000' }}>{size}</div>
+                  <div style={{ fontSize: '11px', color: isSelected ? '#fff' : '#000', fontWeight: '700', marginBottom: '8px' }}>EUR</div>
+                  <div style={{ fontSize: '32px', fontWeight: '600', color: isSelected ? '#fff' : '#000' }}>{size}</div>
                 </div>
               );
             })}
