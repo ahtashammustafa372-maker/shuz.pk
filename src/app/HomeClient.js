@@ -22,21 +22,7 @@ export default function HomeClient({
   const [slider, setSlider] = useState(initialSlider);
   const [categoryBoxes, setCategoryBoxes] = useState(initialCategoryBoxes);
   const [perfectMatchSizes, setPerfectMatchSizes] = useState(initialPerfectMatchSizes);
-  const [selectedPerfectMatchSize, setSelectedPerfectMatchSize] = useState(null);
-  const [perfectMatchProducts, setPerfectMatchProducts] = useState([]);
 
-  useEffect(() => {
-    if (!selectedPerfectMatchSize) {
-      setPerfectMatchProducts([]);
-      return;
-    }
-    
-    const filtered = products.filter(p => {
-      if (!p.sizes || !Array.isArray(p.sizes)) return false;
-      return p.sizes.some(s => String(s).trim() === String(selectedPerfectMatchSize).trim());
-    });
-    setPerfectMatchProducts(filtered);
-  }, [selectedPerfectMatchSize, products]);
 
   
   const defaultHomepage = {
@@ -380,33 +366,20 @@ export default function HomeClient({
             
             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '40px', padding: '0 15px' }}>
               {perfectMatchSizes.map((size, index) => {
-                const isSelected = selectedPerfectMatchSize === size;
                 return (
-                  <div 
+                  <Link 
                     key={index} 
-                    onClick={() => setSelectedPerfectMatchSize(isSelected ? null : size)}
-                    className={`perfect-match-box ${isSelected ? 'selected' : ''}`}
+                    href={`/collections/all?size=${size}`}
+                    target="_blank"
+                    style={{ textDecoration: 'none' }}
+                    className="perfect-match-box"
                   >
                     <div className="pm-eur">EUR</div>
                     <div className="pm-size">{size}</div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
-
-            {selectedPerfectMatchSize && (
-              <div className="product-grid" style={{ marginTop: '20px' }}>
-                {perfectMatchProducts.length > 0 ? (
-                  perfectMatchProducts.map((product) => (
-                    <ProductCard key={product._id || product.id} product={product} />
-                  ))
-                ) : (
-                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', color: '#71717a', fontSize: '16px' }}>
-                    No products found for size {selectedPerfectMatchSize}.
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </section>
       )}
