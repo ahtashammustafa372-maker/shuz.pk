@@ -4,6 +4,8 @@ const SeoSchema = new mongoose.Schema({
   title: { type: String, default: '' },
   description: { type: String, default: '' },
   keywords: { type: String, default: '' },
+  tags: { type: String, default: '' },
+  canonicalUrl: { type: String, default: '' },
   ogImage: { type: String, default: '' }
 }, { _id: false });
 
