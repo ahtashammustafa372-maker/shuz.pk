@@ -229,24 +229,26 @@ export default function HomeClient({
       </section>
 
       {/* Marquee Slider */}
-      <section className="marquee-container">
-        <div className="marquee-content">
-          {[...Array(2)].map((_, j) => (
-            <React.Fragment key={j}>
-              <div className="marquee-item">
-                <img src="https://cdn.shopify.com/s/files/1/0609/8416/4583/files/icons8-shipping-64.png?v=1744286155" alt="Shipping" className="marquee-icon" />
-                <span className="marquee-text">FREE DELIVERY on Every Order</span>
-              </div>
-              <div className="marquee-item">
-                <img src="https://cdn.shopify.com/s/files/1/0609/8416/4583/files/icons8-shoes-80.png?v=1744290534" alt="Shoe" className="marquee-icon" />
-                <span className="marquee-text">New Season Essential</span>
-              </div>
-              <div className="marquee-item">
-                <img src="https://cdn.shopify.com/s/files/1/0609/8416/4583/files/icons8-shoes-80.png?v=1744290534" alt="Shoe" className="marquee-icon" />
-                <span className="marquee-text">Gear up with fresh picks for the season.</span>
-              </div>
-            </React.Fragment>
-          ))}
+      <section className="fluid-container">
+        <div className="marquee-container" style={{ borderRadius: '8px', borderLeft: '1px solid #eeeeee', borderRight: '1px solid #eeeeee' }}>
+          <div className="marquee-content">
+            {[...Array(2)].map((_, j) => (
+              <React.Fragment key={j}>
+                <div className="marquee-item">
+                  <img src="https://cdn.shopify.com/s/files/1/0609/8416/4583/files/icons8-shipping-64.png?v=1744286155" alt="Shipping" className="marquee-icon" />
+                  <span className="marquee-text">FREE DELIVERY on Every Order</span>
+                </div>
+                <div className="marquee-item">
+                  <img src="https://cdn.shopify.com/s/files/1/0609/8416/4583/files/icons8-shoes-80.png?v=1744290534" alt="Shoe" className="marquee-icon" />
+                  <span className="marquee-text">New Season Essential</span>
+                </div>
+                <div className="marquee-item">
+                  <img src="https://cdn.shopify.com/s/files/1/0609/8416/4583/files/icons8-shoes-80.png?v=1744290534" alt="Shoe" className="marquee-icon" />
+                  <span className="marquee-text">Gear up with fresh picks for the season.</span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </section>
 
