@@ -161,7 +161,7 @@ export default function AdminProducts() {
     try {
       const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
       if (res.ok) {
-        loadData();
+        setProducts(prevProducts => prevProducts.filter(p => (p._id || p.id) !== productId));
       }
     } catch (err) {
       console.error("Failed to delete product", err);
