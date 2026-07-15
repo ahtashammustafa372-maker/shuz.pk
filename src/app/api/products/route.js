@@ -94,4 +94,22 @@ export async function POST(request) {
   }
 }
 
+export async function DELETE(request) {
+  try {
+    await dbConnect();
+    const body = await request.json();
+    const { ids } = body;
+    
+    if (!ids || !Array.isArray(ids)) {
+      return NextResponse.json({ error: 'Missing or invalid ids array' }, { status: 400 });
+    }
+
+    await Product.deleteMany({ _id: { $in: ids } });
+    return NextResponse.json({ message: 'Products deleted successfully' }, { status: 200 });
+  } catch (err) {
+    console.error("API Products DELETE Error:", err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
 export { POST as PUT };

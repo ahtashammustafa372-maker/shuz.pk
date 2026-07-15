@@ -23,6 +23,7 @@ export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState([]);
   
   const filteredProducts = products.filter(p => {
     if (!searchQuery) return true;
@@ -168,6 +169,23 @@ export default function AdminProducts() {
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (!confirm(`Are you sure you want to delete ${selectedProducts.length} selected products?`)) return;
+    try {
+      const res = await fetch('/api/products', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedProducts })
+      });
+      if (res.ok) {
+        setProducts(prevProducts => prevProducts.filter(p => !selectedProducts.includes(p._id || p.id)));
+        setSelectedProducts([]);
+      }
+    } catch (err) {
+      console.error("Failed to delete products", err);
+    }
+  };
+
   const handleDuplicateProduct = async (product) => {
     if (!confirm("Are you sure you want to duplicate this product?")) return;
     try {
@@ -242,6 +260,14 @@ export default function AdminProducts() {
             />
             <Search size={16} color="#71717a" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
           </div>
+          {selectedProducts.length > 0 && (
+            <button 
+              onClick={handleBulkDelete}
+              style={{ padding: '10px 20px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
+            >
+              <Trash2 size={16} /> Delete Selected ({selectedProducts.length})
+            </button>
+          )}
           <button 
             onClick={() => setShowAddProductModal(true)}
             style={{ padding: '10px 20px', backgroundColor: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
@@ -255,6 +281,20 @@ export default function AdminProducts() {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ backgroundColor: '#f4f4f5' }}>
             <tr style={{ color: '#71717a', fontSize: '13px', textTransform: 'uppercase' }}>
+              <th style={{ padding: '15px', width: '40px' }}>
+                <input 
+                  type="checkbox" 
+                  checked={filteredProducts.length > 0 && selectedProducts.length === filteredProducts.length}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedProducts(filteredProducts.map(p => p._id || p.id));
+                    } else {
+                      setSelectedProducts([]);
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                />
+              </th>
               <th style={{ padding: '15px' }}>Image</th>
               <th style={{ padding: '15px' }}>Details</th>
               <th style={{ padding: '15px' }}>Category</th>
@@ -266,11 +306,26 @@ export default function AdminProducts() {
           <tbody>
             {filteredProducts.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ padding: '20px', textAlign: 'center', color: '#71717a' }}>No products found matching your search.</td>
+                <td colSpan="7" style={{ padding: '20px', textAlign: 'center', color: '#71717a' }}>No products found matching your search.</td>
               </tr>
             ) : (
               filteredProducts.map(p => (
                 <tr key={p._id || p.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
+                  <td style={{ padding: '15px' }}>
+                    <input 
+                      type="checkbox"
+                      checked={selectedProducts.includes(p._id || p.id)}
+                      onChange={(e) => {
+                        const id = p._id || p.id;
+                        if (e.target.checked) {
+                          setSelectedProducts(prev => [...prev, id]);
+                        } else {
+                          setSelectedProducts(prev => prev.filter(selectedId => selectedId !== id));
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </td>
                   <td style={{ padding: '15px' }}><img src={p.images?.[0] || '/images/sneaker_black.jpg'} alt={p.title} style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} /></td>
                 <td style={{ padding: '15px' }}>
                   <strong style={{ display: 'block', color: '#18181b', fontSize: '14px' }}>{p.title}</strong>
