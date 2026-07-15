@@ -2882,3 +2882,50 @@ h1, h2, h3, h4, h5, h6 {
 .product-description-html p {
   margin-bottom: 10px;
 }
+
+/* Perfect Match Box */
+.perfect-match-box {
+  border: 1px solid #eaeaea;
+  padding: 20px 0;
+  width: 90px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.perfect-match-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-color: #ccc;
+}
+
+.perfect-match-box.selected {
+  background-color: #000;
+  border-color: #000;
+}
+
+.perfect-match-box .pm-eur {
+  font-size: 11px;
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.perfect-match-box .pm-size {
+  font-size: 32px;
+  font-weight: 600;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.perfect-match-box.selected .pm-eur,
+.perfect-match-box.selected .pm-size {
+  color: #fff;
+}

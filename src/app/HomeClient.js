@@ -372,49 +372,42 @@ export default function HomeClient({
       {/* Your Perfect Match Section */}
       {perfectMatchSizes && perfectMatchSizes.length > 0 && (
         <section className="fluid-container" style={{ padding: '40px 0 20px 0' }}>
-          <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <h2 className="section-title" style={{ fontSize: '42px', fontWeight: '400', margin: '0 0 10px 0', letterSpacing: '1px' }}>Your Perfect Match</h2>
-            <div style={{ width: '400px', height: '1px', backgroundColor: '#000', margin: '0 auto' }}></div>
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '40px', padding: '0 15px' }}>
-            {perfectMatchSizes.map((size, index) => {
-              const isSelected = selectedPerfectMatchSize === size;
-              return (
-                <div 
-                  key={index} 
-                  onClick={() => setSelectedPerfectMatchSize(isSelected ? null : size)}
-                  style={{ 
-                    border: '1px solid #eaeaea', 
-                    padding: '20px 0', 
-                    width: '85px', 
-                    textAlign: 'center', 
-                    cursor: 'pointer', 
-                    backgroundColor: isSelected ? '#a3a3a3' : '#fff',
-                    transition: 'all 0.2s',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
-                  }}
-                >
-                  <div style={{ fontSize: '11px', color: isSelected ? '#fff' : '#000', fontWeight: '700', marginBottom: '8px' }}>EUR</div>
-                  <div style={{ fontSize: '32px', fontWeight: '600', color: isSelected ? '#fff' : '#000' }}>{size}</div>
-                </div>
-              );
-            })}
-          </div>
-
-          {selectedPerfectMatchSize && (
-            <div className="product-grid" style={{ marginTop: '20px' }}>
-              {perfectMatchProducts.length > 0 ? (
-                perfectMatchProducts.map((product) => (
-                  <ProductCard key={product._id || product.id} product={product} />
-                ))
-              ) : (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', color: '#71717a', fontSize: '16px' }}>
-                  No products found for size {selectedPerfectMatchSize}.
-                </div>
-              )}
+          <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+            <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <h2 className="section-title" style={{ fontSize: '42px', fontWeight: '400', margin: '0 0 10px 0', letterSpacing: '1px' }}>Your Perfect Match</h2>
+              <div style={{ width: '400px', height: '1px', backgroundColor: '#000', margin: '0 auto' }}></div>
             </div>
-          )}
+            
+            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '40px', padding: '0 15px' }}>
+              {perfectMatchSizes.map((size, index) => {
+                const isSelected = selectedPerfectMatchSize === size;
+                return (
+                  <div 
+                    key={index} 
+                    onClick={() => setSelectedPerfectMatchSize(isSelected ? null : size)}
+                    className={`perfect-match-box ${isSelected ? 'selected' : ''}`}
+                  >
+                    <div className="pm-eur">EUR</div>
+                    <div className="pm-size">{size}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {selectedPerfectMatchSize && (
+              <div className="product-grid" style={{ marginTop: '20px' }}>
+                {perfectMatchProducts.length > 0 ? (
+                  perfectMatchProducts.map((product) => (
+                    <ProductCard key={product._id || product.id} product={product} />
+                  ))
+                ) : (
+                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', color: '#71717a', fontSize: '16px' }}>
+                    No products found for size {selectedPerfectMatchSize}.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
