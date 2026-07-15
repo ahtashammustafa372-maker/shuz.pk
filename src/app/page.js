@@ -29,6 +29,7 @@ export default async function HomePage() {
     slider = settings.slider || [];
     categoryBoxes = settings.categoryBoxes || [];
     homepageSettings = settings.homepage || null;
+    var perfectMatchSizes = settings.perfectMatchSizes || [];
   } catch (error) {
     console.error('Failed to fetch initial data for home page', error);
   }
@@ -39,6 +40,7 @@ export default async function HomePage() {
       initialSlider={slider}
       initialCategoryBoxes={categoryBoxes}
       initialHomepageSettings={homepageSettings}
+      initialPerfectMatchSizes={perfectMatchSizes}
     />
   );
 }

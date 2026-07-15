@@ -15,6 +15,7 @@ export default function AdminSidebar() {
     { label: 'Returns', href: '/admin/returns', icon: <RotateCcw size={18} /> },
     { label: 'Users', href: '/admin/users', icon: <Users size={18} /> },
     { label: 'Category Boxes', href: '/admin/category-boxes', icon: <LayoutDashboard size={18} /> },
+    { label: 'Perfect Match Sizes', href: '/admin/perfect-match', icon: <LayoutDashboard size={18} /> },
     { label: 'Main Slider', href: '/admin/slider', icon: <LayoutDashboard size={18} /> },
     { label: 'Navigation', href: '/admin/navigation', icon: <Navigation size={18} /> },
     { label: 'Footer Settings', href: '/admin/footer', icon: <LayoutDashboard size={18} /> },

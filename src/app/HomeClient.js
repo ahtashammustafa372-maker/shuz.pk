@@ -15,11 +15,29 @@ export default function HomeClient({
   initialProducts = [], 
   initialSlider = [], 
   initialCategoryBoxes = [], 
-  initialHomepageSettings = null 
+  initialHomepageSettings = null,
+  initialPerfectMatchSizes = []
 }) {
   const [products, setProducts] = useState(initialProducts);
   const [slider, setSlider] = useState(initialSlider);
   const [categoryBoxes, setCategoryBoxes] = useState(initialCategoryBoxes);
+  const [perfectMatchSizes, setPerfectMatchSizes] = useState(initialPerfectMatchSizes);
+  const [selectedPerfectMatchSize, setSelectedPerfectMatchSize] = useState(null);
+  const [perfectMatchProducts, setPerfectMatchProducts] = useState([]);
+
+  useEffect(() => {
+    if (!selectedPerfectMatchSize) {
+      setPerfectMatchProducts([]);
+      return;
+    }
+    
+    const filtered = products.filter(p => {
+      if (!p.sizes || !Array.isArray(p.sizes)) return false;
+      return p.sizes.some(s => String(s).trim() === String(selectedPerfectMatchSize).trim());
+    });
+    setPerfectMatchProducts(filtered);
+  }, [selectedPerfectMatchSize, products]);
+
   
   const defaultHomepage = {
     slidesSection: {
@@ -350,6 +368,55 @@ export default function HomeClient({
           </Link>
         </div>
       </section>
+
+      {/* Your Perfect Match Section */}
+      {perfectMatchSizes && perfectMatchSizes.length > 0 && (
+        <section className="fluid-container" style={{ padding: '40px 0 20px 0' }}>
+          <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '30px' }}>
+            <h2 className="section-title" style={{ fontSize: '36px', fontWeight: '400', margin: '0 0 10px 0' }}>Your Perfect Match</h2>
+            <div style={{ width: '250px', height: '1px', backgroundColor: '#000', margin: '0 auto' }}></div>
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '30px', padding: '0 15px' }}>
+            {perfectMatchSizes.map((size, index) => {
+              const isSelected = selectedPerfectMatchSize === size;
+              return (
+                <div 
+                  key={index} 
+                  onClick={() => setSelectedPerfectMatchSize(isSelected ? null : size)}
+                  style={{ 
+                    border: '1px solid #e4e4e7', 
+                    padding: '8px 0', 
+                    width: '75px', 
+                    textAlign: 'center', 
+                    cursor: 'pointer', 
+                    backgroundColor: isSelected ? '#a1a1aa' : '#fff',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.03)'
+                  }}
+                >
+                  <div style={{ fontSize: '10px', color: isSelected ? '#fff' : '#71717a', fontWeight: '700', marginBottom: '2px' }}>EUR</div>
+                  <div style={{ fontSize: '24px', fontWeight: '500', color: isSelected ? '#fff' : '#000' }}>{size}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {selectedPerfectMatchSize && (
+            <div className="product-grid" style={{ marginTop: '20px' }}>
+              {perfectMatchProducts.length > 0 ? (
+                perfectMatchProducts.map((product) => (
+                  <ProductCard key={product._id || product.id} product={product} />
+                ))
+              ) : (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', color: '#71717a', fontSize: '16px' }}>
+                  No products found for size {selectedPerfectMatchSize}.
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Promo Grid */}
       <section className="fluid-container">
