@@ -357,13 +357,13 @@ export default function HomeClient({
 
       {/* Your Perfect Match Section */}
       {perfectMatchSizes && perfectMatchSizes.length > 0 && (
-        <section className="fluid-container" style={{ padding: '40px 0 20px 0' }}>
+        <section className="fluid-container" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
           <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '40px' }}>
             <h2 className="section-title" style={{ fontSize: '42px', fontWeight: '400', margin: '0 0 10px 0', letterSpacing: '1px' }}>Your Perfect Match</h2>
             <div style={{ width: '400px', height: '1px', backgroundColor: '#000', margin: '0 auto' }}></div>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px', marginBottom: '40px', padding: '0 15px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px', marginBottom: '40px' }}>
             {perfectMatchSizes.map((size, index) => {
               return (
                 <Link 
