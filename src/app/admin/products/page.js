@@ -533,6 +533,11 @@ export default function AdminProducts() {
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Price</label>
                   <input type="number" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.price} onChange={e => setEditingProduct({...editingProduct, price: parseFloat(e.target.value)})} />
                 </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Compare-at Price</label>
+                  <input type="number" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.compare_at_price || ''} onChange={e => setEditingProduct({...editingProduct, compare_at_price: e.target.value ? parseFloat(e.target.value) : null})} />
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Status *</label>
@@ -541,10 +546,6 @@ export default function AdminProducts() {
                     <option value="draft">Draft</option>
                     <option value="trash">Trash</option>
                   </select>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Compare-at Price</label>
-                  <input type="number" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.compare_at_price || ''} onChange={e => setEditingProduct({...editingProduct, compare_at_price: e.target.value ? parseFloat(e.target.value) : null})} />
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
