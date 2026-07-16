@@ -22,7 +22,7 @@ export async function GET(request) {
         query.status = status;
       }
     } else {
-      query.status = 'active'; // Default for client views
+      query.status = { $nin: ['draft', 'trash'] }; // Default for client views
     }
 
     if (q) {
