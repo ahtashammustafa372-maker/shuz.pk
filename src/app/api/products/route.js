@@ -13,8 +13,17 @@ export async function GET(request) {
     const size = searchParams.get('size');
     const brand = searchParams.get('brand');
     const sort = searchParams.get('sort');
+    const status = searchParams.get('status');
 
     let query = {};
+
+    if (status) {
+      if (status !== 'all') {
+        query.status = status;
+      }
+    } else {
+      query.status = 'active'; // Default for client views
+    }
 
     if (q) {
       query.$or = [
@@ -104,8 +113,18 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Missing or invalid ids array' }, { status: 400 });
     }
 
-    await Product.deleteMany({ _id: { $in: ids } });
-    return NextResponse.json({ message: 'Products deleted successfully' }, { status: 200 });
+    const products = await Product.find({ _id: { $in: ids } });
+    const toSoftDelete = products.filter(p => p.status !== 'trash').map(p => p._id);
+    const toHardDelete = products.filter(p => p.status === 'trash').map(p => p._id);
+
+    if (toSoftDelete.length > 0) {
+      await Product.updateMany({ _id: { $in: toSoftDelete } }, { status: 'trash' });
+    }
+    if (toHardDelete.length > 0) {
+      await Product.deleteMany({ _id: { $in: toHardDelete } });
+    }
+    
+    return NextResponse.json({ message: 'Products processed successfully' }, { status: 200 });
   } catch (err) {
     console.error("API Products DELETE Error:", err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

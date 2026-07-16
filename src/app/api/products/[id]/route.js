@@ -25,13 +25,19 @@ export async function DELETE(request, { params }) {
   try {
     await dbConnect();
     const { id } = await params;
-    
-    const deleted = await Product.findByIdAndDelete(id);
-    if (!deleted) {
+    const product = await Product.findById(id);
+    if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
     
-    return NextResponse.json({ success: true, message: 'Product deleted successfully' });
+    if (product.status !== 'trash') {
+      product.status = 'trash';
+      await product.save();
+      return NextResponse.json({ success: true, message: 'Product moved to trash' });
+    }
+
+    await Product.findByIdAndDelete(id);
+    return NextResponse.json({ success: true, message: 'Product permanently deleted' });
   } catch (err) {
     console.error("API Product DELETE Error:", err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

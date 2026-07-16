@@ -24,8 +24,14 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [currentTab, setCurrentTab] = useState('active');
   
   const filteredProducts = products.filter(p => {
+    const pStatus = p.status || 'active';
+    if (currentTab === 'active' && pStatus !== 'active') return false;
+    if (currentTab === 'draft' && pStatus !== 'draft') return false;
+    if (currentTab === 'trash' && pStatus !== 'trash') return false;
+
     if (!searchQuery) return true;
     const lowerQ = searchQuery.toLowerCase();
     return p.title?.toLowerCase().includes(lowerQ) || p.vendor?.toLowerCase().includes(lowerQ) || p.category_slug?.toLowerCase().includes(lowerQ);
@@ -50,6 +56,7 @@ export default function AdminProducts() {
   const [newColors, setNewColors] = useState('Black, White');
   const [newSizes, setNewSizes] = useState('39, 40, 41, 42, 43, 44, 45');
   const [newSizeStock, setNewSizeStock] = useState({});
+  const [newStatus, setNewStatus] = useState('active');
   const [newSeo, setNewSeo] = useState({ title: '', description: '', keywords: '', ogImage: '' });
 
   const [isUploading, setIsUploading] = useState(false);
@@ -98,7 +105,7 @@ export default function AdminProducts() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const pRes = await fetch('/api/products');
+      const pRes = await fetch('/api/products?status=all');
       if (pRes.ok) {
         const pData = await pRes.json();
         setProducts(pData);
@@ -137,6 +144,7 @@ export default function AdminProducts() {
         featured: false,
         new_arrival: false,
         flash_sale: false,
+        status: newStatus,
         seo: newSeo,
         created_at: new Date().toISOString()
       };
@@ -149,7 +157,7 @@ export default function AdminProducts() {
 
       if (res.ok) {
         setShowAddProductModal(false);
-        setNewTitle(''); setNewPrice(''); setNewComparePrice(''); setNewVendor('Generic'); setNewStock('10'); setNewDescription(''); setNewSeo({ title: '', description: '', keywords: '', ogImage: '' }); setNewColors('Black, White'); setNewSizes('39, 40, 41, 42, 43, 44, 45'); setNewImages(''); setNewSizeStock({});
+        setNewTitle(''); setNewPrice(''); setNewComparePrice(''); setNewVendor('Generic'); setNewStock('10'); setNewDescription(''); setNewSeo({ title: '', description: '', keywords: '', ogImage: '' }); setNewColors('Black, White'); setNewSizes('39, 40, 41, 42, 43, 44, 45'); setNewImages(''); setNewSizeStock({}); setNewStatus('active');
         loadData();
       }
     } catch (err) {
@@ -157,15 +165,35 @@ export default function AdminProducts() {
     }
   };
 
-  const handleDeleteProduct = async (productId) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+  const handleDeleteProduct = async (productId, currentStatus) => {
+    if (!confirm(currentStatus === 'trash' ? "Are you sure you want to permanently delete this product?" : "Are you sure you want to move this product to trash?")) return;
     try {
       const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
       if (res.ok) {
-        setProducts(prevProducts => prevProducts.filter(p => (p._id || p.id) !== productId));
+        if (currentStatus === 'trash') {
+          setProducts(prevProducts => prevProducts.filter(p => (p._id || p.id) !== productId));
+        } else {
+          loadData();
+        }
       }
     } catch (err) {
       console.error("Failed to delete product", err);
+    }
+  };
+
+  const handleRestoreProduct = async (product) => {
+    try {
+      const payload = { status: 'active' };
+      const res = await fetch(`/api/products/${product._id || product.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        loadData();
+      }
+    } catch (err) {
+      console.error("Failed to restore product", err);
     }
   };
 
@@ -178,7 +206,7 @@ export default function AdminProducts() {
         body: JSON.stringify({ ids: selectedProducts })
       });
       if (res.ok) {
-        setProducts(prevProducts => prevProducts.filter(p => !selectedProducts.includes(p._id || p.id)));
+        loadData();
         setSelectedProducts([]);
       }
     } catch (err) {
@@ -277,6 +305,27 @@ export default function AdminProducts() {
         </div>
       </div>
 
+      <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', borderBottom: '1px solid #e4e4e7' }}>
+        {['active', 'draft', 'trash', 'all'].map(tab => (
+          <button 
+            key={tab} 
+            onClick={() => { setCurrentTab(tab); setSelectedProducts([]); }}
+            style={{ 
+              padding: '10px 15px', 
+              background: 'none', 
+              border: 'none', 
+              borderBottom: currentTab === tab ? '2px solid var(--color-primary)' : '2px solid transparent', 
+              color: currentTab === tab ? 'var(--color-primary)' : '#71717a',
+              fontWeight: currentTab === tab ? '600' : '500',
+              cursor: 'pointer',
+              textTransform: 'capitalize'
+            }}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
       <div style={{ backgroundColor: '#fff', borderRadius: '10px', border: '1px solid #e4e4e7', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ backgroundColor: '#f4f4f5' }}>
@@ -330,6 +379,9 @@ export default function AdminProducts() {
                 <td style={{ padding: '15px' }}>
                   <strong style={{ display: 'block', color: '#18181b', fontSize: '14px' }}>{p.title}</strong>
                   <span style={{ fontSize: '12px', color: '#71717a' }}>Brand: {p.vendor}</span>
+                  {(p.status === 'draft' || p.status === 'trash') && (
+                    <span style={{ marginLeft: '8px', fontSize: '11px', fontWeight: '600', padding: '2px 6px', borderRadius: '4px', backgroundColor: p.status === 'draft' ? '#fef3c7' : '#fee2e2', color: p.status === 'draft' ? '#d97706' : '#dc2626', textTransform: 'uppercase' }}>{p.status}</span>
+                  )}
                 </td>
                 <td style={{ padding: '15px', fontSize: '14px', textTransform: 'capitalize' }}>{p.category_slug}</td>
                 <td style={{ padding: '15px', fontSize: '14px', fontWeight: '500' }}>Rs. {p.price.toLocaleString()}</td>
@@ -338,10 +390,15 @@ export default function AdminProducts() {
                 </td>
                 <td style={{ padding: '15px' }}>
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <a href={`/products/${p.slug || p._id || p.id}`} target="_blank" rel="noopener noreferrer" style={{ background: 'none', border: 'none', color: '#8b5cf6', cursor: 'pointer', padding: '5px', display: 'inline-flex', alignItems: 'center' }} title="View"><Eye size={16} /></a>
+                    {p.status !== 'trash' && (
+                      <a href={`/products/${p.slug || p._id || p.id}`} target="_blank" rel="noopener noreferrer" style={{ background: 'none', border: 'none', color: '#8b5cf6', cursor: 'pointer', padding: '5px', display: 'inline-flex', alignItems: 'center' }} title="View"><Eye size={16} /></a>
+                    )}
                     <button onClick={() => setEditingProduct(p)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: '5px' }} title="Edit"><Edit2 size={16} /></button>
                     <button onClick={() => handleDuplicateProduct(p)} style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', padding: '5px' }} title="Duplicate"><Copy size={16} /></button>
-                    <button onClick={() => handleDeleteProduct(p._id || p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }} title="Delete"><Trash2 size={16} /></button>
+                    {p.status === 'trash' && (
+                      <button onClick={() => handleRestoreProduct(p)} style={{ background: 'none', border: 'none', color: '#f59e0b', cursor: 'pointer', padding: '5px', fontWeight: '600', fontSize: '12px' }} title="Restore">Restore</button>
+                    )}
+                    <button onClick={() => handleDeleteProduct(p._id || p.id, p.status || 'active')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '5px' }} title={p.status === 'trash' ? "Delete Permanently" : "Move to Trash"}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>
@@ -372,6 +429,15 @@ export default function AdminProducts() {
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Compare-at Price</label>
                   <input type="number" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={newComparePrice} onChange={e => setNewComparePrice(e.target.value)} />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Status *</label>
+                  <select style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={newStatus} onChange={e => setNewStatus(e.target.value)}>
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                  </select>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
@@ -466,6 +532,15 @@ export default function AdminProducts() {
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Price</label>
                   <input type="number" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.price} onChange={e => setEditingProduct({...editingProduct, price: parseFloat(e.target.value)})} />
+                </div>
+              <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Status *</label>
+                  <select style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.status || 'active'} onChange={e => setEditingProduct({...editingProduct, status: e.target.value})}>
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                    <option value="trash">Trash</option>
+                  </select>
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Compare-at Price</label>

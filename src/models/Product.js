@@ -25,6 +25,7 @@ const ProductSchema = new mongoose.Schema({
   featured: { type: Boolean, default: false },
   new_arrival: { type: Boolean, default: false },
   flash_sale: { type: Boolean, default: false },
+  status: { type: String, enum: ['active', 'draft', 'trash'], default: 'active' },
   seo: { type: SeoSchema, default: () => ({}) }
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
