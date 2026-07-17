@@ -38,10 +38,7 @@ export default function ProductCard({ product }) {
         
         <div style={{ position: 'relative', width: '100%', aspectRatio: '1', backgroundColor: '#f5f6f9', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           
-          {/* Watermark JUTAY */}
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '64px', fontWeight: '900', color: '#e5e7eb', opacity: 0.5, zIndex: 0, pointerEvents: 'none', letterSpacing: '4px' }}>
-            JUTAY
-          </div>
+          {/* Watermark JUTAY removed */}
 
           {/* Badges */}
           <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 10 }}>
