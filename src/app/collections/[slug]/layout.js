@@ -4,7 +4,7 @@ import Product from '@/src/models/Product';
 import Page from '@/src/models/Page';
 
 export async function generateMetadata({ params }) {
-  const collectionSlug = params.slug;
+  const { slug: collectionSlug } = await params;
   let title = "Collections - Shuz.pk";
   let description = "Browse our amazing collections.";
   let ogImage = "/images/logo.png";

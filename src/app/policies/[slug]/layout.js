@@ -4,8 +4,9 @@ import Product from '@/src/models/Product';
 import PageModel from '@/src/models/Page';
 
 export async function generateMetadata({ params }) {
+  const { slug } = await params;
   await dbConnect();
-  const page = await PageModel.findOne({ slug: params.slug }).lean();
+  const page = await PageModel.findOne({ slug }).lean();
   
   if (!page) {
     return {
