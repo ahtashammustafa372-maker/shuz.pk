@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '../../../context/CartContext';
+import { useTheme } from '../../../context/ThemeContext';
 import ProductCard from '../../../components/ProductCard';
 import { ChevronDown, ChevronUp, ShoppingCart, CreditCard, X } from 'lucide-react';
 
@@ -12,6 +13,7 @@ export default function ProductDetailPage() {
   const productSlug = params.slug;
 
   const { addToCart } = useCart();
+  const { generalSettings } = useTheme();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -327,24 +329,30 @@ export default function ProductDetailPage() {
                 {accordions.sizeChart ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </div>
               <div className="accordion-content">
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
-                  <thead>
-                    <tr style={{ backgroundColor: 'var(--color-background-secondary)' }}>
-                      <th style={{ padding: '6px', border: '1px solid #ddd' }}>EU Size</th>
-                      <th style={{ padding: '6px', border: '1px solid #ddd' }}>US Size (Men)</th>
-                      <th style={{ padding: '6px', border: '1px solid #ddd' }}>Inches</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>40</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>7</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>9.8"</td></tr>
-                    <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>41</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>8</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10.1"</td></tr>
-                    <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>42</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>8.5</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10.4"</td></tr>
-                    <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>43</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>9.5</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10.8"</td></tr>
-                    <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>44</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>11.1"</td></tr>
-                    <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>45</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>11</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>11.4"</td></tr>
-                  </tbody>
-                </table>
-                <p style={{ marginTop: '10px', fontSize: '12px' }}>* Shoes usually fit true to size. If you have wide feet, we recommend ordering one size larger.</p>
+                {generalSettings?.sizeChart ? (
+                  <div dangerouslySetInnerHTML={{ __html: generalSettings.sizeChart }} style={{ lineHeight: '1.6' }} />
+                ) : (
+                  <>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
+                      <thead>
+                        <tr style={{ backgroundColor: 'var(--color-background-secondary)' }}>
+                          <th style={{ padding: '6px', border: '1px solid #ddd' }}>EU Size</th>
+                          <th style={{ padding: '6px', border: '1px solid #ddd' }}>US Size (Men)</th>
+                          <th style={{ padding: '6px', border: '1px solid #ddd' }}>Inches</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>40</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>7</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>9.8"</td></tr>
+                        <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>41</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>8</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10.1"</td></tr>
+                        <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>42</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>8.5</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10.4"</td></tr>
+                        <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>43</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>9.5</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10.8"</td></tr>
+                        <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>44</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>10</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>11.1"</td></tr>
+                        <tr><td style={{ padding: '6px', border: '1px solid #ddd' }}>45</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>11</td><td style={{ padding: '6px', border: '1px solid #ddd' }}>11.4"</td></tr>
+                      </tbody>
+                    </table>
+                    <p style={{ marginTop: '10px', fontSize: '12px' }}>* Shoes usually fit true to size. If you have wide feet, we recommend ordering one size larger.</p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -354,9 +362,15 @@ export default function ProductDetailPage() {
                 {accordions.shipping ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </div>
               <div className="accordion-content">
-                <p>📦 <strong>Cash on Delivery:</strong> We offer Cash on Delivery (COD) across Pakistan. Pay at your doorstep upon receiving the parcel.</p>
-                <p style={{ marginTop: '6px' }}>🚀 <strong>Delivery Timeline:</strong> Orders are processed instantly from our Lahore warehouse. Delivery takes 3 to 5 business days.</p>
-                <p style={{ marginTop: '6px' }}>🔄 <strong>Return/Exchange policy:</strong> Easy exchanges within 7 days of delivery. Keep original tag intact.</p>
+                {generalSettings?.shippingPolicy ? (
+                  <div dangerouslySetInnerHTML={{ __html: generalSettings.shippingPolicy.replace(/\n/g, '<br/>') }} style={{ lineHeight: '1.6' }} />
+                ) : (
+                  <>
+                    <p>📦 <strong>Cash on Delivery:</strong> We offer Cash on Delivery (COD) across Pakistan. Pay at your doorstep upon receiving the parcel.</p>
+                    <p style={{ marginTop: '6px' }}>🚀 <strong>Delivery Timeline:</strong> Orders are processed instantly from our Lahore warehouse. Delivery takes 3 to 5 business days.</p>
+                    <p style={{ marginTop: '6px' }}>🔄 <strong>Return/Exchange policy:</strong> Easy exchanges within 7 days of delivery. Keep original tag intact.</p>
+                  </>
+                )}
               </div>
             </div>
           </div>

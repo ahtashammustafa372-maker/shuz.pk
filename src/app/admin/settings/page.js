@@ -170,6 +170,18 @@ export default function AdminSettings() {
           </div>
 
           <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: '#3f3f46' }}>Size Chart HTML</label>
+            <textarea 
+              rows="6"
+              value={settings.general.sizeChart || ''} 
+              onChange={(e) => setSettings({ ...settings, general: { ...settings.general, sizeChart: e.target.value } })}
+              style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px', fontFamily: 'monospace' }}
+              placeholder="<table>...</table>"
+            ></textarea>
+            <p style={{ fontSize: '12px', color: '#a1a1aa', marginTop: '5px' }}>You can paste HTML for a table or any other format here. This appears in the Size Chart & Fit Guide section on product pages.</p>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: '#3f3f46' }}>Footer Copyright Text</label>
             <input 
               type="text" 
