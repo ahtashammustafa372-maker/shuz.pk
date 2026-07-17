@@ -44,6 +44,7 @@ export default function Header() {
 
   // Use header menus from general settings or fallback
   const fallbackNavItems = [
+    { label: "Shop", url: "/collections/all" },
     { label: "Men", url: "/collections/men" },
     { label: "Women", url: "/collections/women" },
     { label: "New Arrival", url: "/collections/new-arrival" },
