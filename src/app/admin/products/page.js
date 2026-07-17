@@ -57,6 +57,9 @@ export default function AdminProducts() {
   const [newSizes, setNewSizes] = useState('39, 40, 41, 42, 43, 44, 45');
   const [newSizeStock, setNewSizeStock] = useState({});
   const [newStatus, setNewStatus] = useState('active');
+  const [newArrival, setNewArrival] = useState(false);
+  const [newFeatured, setNewFeatured] = useState(false);
+  const [newFlashSale, setNewFlashSale] = useState(false);
   const [newSeo, setNewSeo] = useState({ title: '', description: '', keywords: '', ogImage: '' });
 
   const [isUploading, setIsUploading] = useState(false);
@@ -141,9 +144,9 @@ export default function AdminProducts() {
           return isNaN(num) ? val : num;
         }).filter(s => s !== null),
         sizeStock: newSizeStock,
-        featured: false,
-        new_arrival: false,
-        flash_sale: false,
+        featured: newFeatured,
+        new_arrival: newArrival,
+        flash_sale: newFlashSale,
         status: newStatus,
         seo: newSeo,
         created_at: new Date().toISOString()
@@ -157,7 +160,7 @@ export default function AdminProducts() {
 
       if (res.ok) {
         setShowAddProductModal(false);
-        setNewTitle(''); setNewPrice(''); setNewComparePrice(''); setNewVendor('Generic'); setNewStock('10'); setNewDescription(''); setNewSeo({ title: '', description: '', keywords: '', ogImage: '' }); setNewColors('Black, White'); setNewSizes('39, 40, 41, 42, 43, 44, 45'); setNewImages(''); setNewSizeStock({}); setNewStatus('active');
+        setNewTitle(''); setNewPrice(''); setNewComparePrice(''); setNewVendor('Generic'); setNewStock('10'); setNewDescription(''); setNewSeo({ title: '', description: '', keywords: '', ogImage: '' }); setNewColors('Black, White'); setNewSizes('39, 40, 41, 42, 43, 44, 45'); setNewImages(''); setNewSizeStock({}); setNewStatus('active'); setNewArrival(false); setNewFeatured(false); setNewFlashSale(false);
         loadData();
       }
     } catch (err) {
@@ -475,6 +478,17 @@ export default function AdminProducts() {
                   <input type="text" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={newSizes} onChange={e => setNewSizes(e.target.value)} placeholder="e.g. 39, 40, 41" />
                 </div>
               </div>
+              <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={newArrival} onChange={e => setNewArrival(e.target.checked)} /> New Arrival
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={newFeatured} onChange={e => setNewFeatured(e.target.checked)} /> Best Seller (Featured)
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={newFlashSale} onChange={e => setNewFlashSale(e.target.checked)} /> Flash Sale
+                </label>
+              </div>
               <div style={{ marginBottom: '15px' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Global Stock *</label>
                 <input type="number" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={newStock} onChange={e => setNewStock(e.target.value)} />
@@ -582,6 +596,17 @@ export default function AdminProducts() {
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Sizes (comma separated)</label>
                   <input type="text" style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={Array.isArray(editingProduct.sizes) ? editingProduct.sizes.join(', ') : editingProduct.sizes || ''} onChange={e => setEditingProduct({...editingProduct, sizes: e.target.value})} placeholder="e.g. 39, 40, 41" />
                 </div>
+              </div>
+              <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={editingProduct.new_arrival || false} onChange={e => setEditingProduct({...editingProduct, new_arrival: e.target.checked})} /> New Arrival
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={editingProduct.featured || false} onChange={e => setEditingProduct({...editingProduct, featured: e.target.checked})} /> Best Seller (Featured)
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={editingProduct.flash_sale || false} onChange={e => setEditingProduct({...editingProduct, flash_sale: e.target.checked})} /> Flash Sale
+                </label>
               </div>
               <div style={{ marginBottom: '15px' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Global Stock</label>
