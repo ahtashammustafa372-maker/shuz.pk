@@ -48,6 +48,7 @@ export default function ProductDetailPage() {
   });
 
   const handleMouseMove = (e) => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 991) return;
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
@@ -58,6 +59,7 @@ export default function ProductDetailPage() {
   };
 
   const handleMouseLeave = () => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 991) return;
     setZoomStyle({ transformOrigin: 'center center', transform: 'scale(1)' });
   };
 
