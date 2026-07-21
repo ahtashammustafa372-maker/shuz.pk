@@ -15,7 +15,7 @@ const ProductSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   price: { type: Number, required: true },
   compare_at_price: { type: Number, default: null },
-  category_slug: { type: String, required: true },
+  category_slug: { type: mongoose.Schema.Types.Mixed, required: true },
   images: [{ type: String }],
   colors: [{ type: String }],
   sizes: [{ type: mongoose.Schema.Types.Mixed }], // can be strings or numbers

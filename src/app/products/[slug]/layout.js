@@ -19,7 +19,8 @@ export async function generateMetadata({ params }) {
   const title = seo.title || `${product.title} - Shuz.pk`;
   const rawDescription = seo.description || product.description || '';
   const description = rawDescription.replace(/<[^>]*>?/gm, '');
-  const keywordsStr = [seo.keywords || `${product.category_slug}, ${product.vendor}, sneakers`, seo.tags].filter(Boolean).join(', ');
+  const catKeywords = Array.isArray(product.category_slug) ? product.category_slug.join(', ') : (product.category_slug || '');
+  const keywordsStr = [seo.keywords || `${catKeywords}, ${product.vendor}, sneakers`, seo.tags].filter(Boolean).join(', ');
   const ogImage = seo.ogImage || (product.images && product.images[0]) || '/images/logo.png';
 
   return {

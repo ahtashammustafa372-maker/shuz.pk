@@ -81,7 +81,12 @@ export default function ProductDetailPage() {
             setSelectedColor(target.colors[0]);
             
             // Load recommendations (same category, excluding current product)
-            const related = list.filter(p => p.category_slug === target.category_slug && p.id !== target.id);
+            const related = list.filter(p => {
+              if (p.id === target.id) return false;
+              const pCats = Array.isArray(p.category_slug) ? p.category_slug : [p.category_slug].filter(Boolean);
+              const tCats = Array.isArray(target.category_slug) ? target.category_slug : [target.category_slug].filter(Boolean);
+              return pCats.some(cat => tCats.includes(cat));
+            });
             setRecommendedProducts(related.slice(0, 4));
 
             // Find sibling products (color variants) by comparing the base title (before the hyphen)
@@ -145,8 +150,10 @@ export default function ProductDetailPage() {
       <div className="breadcrumb" style={{ margin: '20px 0', fontSize: '14px', color: 'var(--color-foreground-secondary)' }}>
         <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>Home</Link>
         <span style={{ margin: '0 8px' }}>&gt;</span>
-        <Link href={`/collections/${product.category_slug}`} style={{ textDecoration: 'none', color: 'inherit', textTransform: 'capitalize' }}>
-          {product.category_slug ? product.category_slug.replace(/-/g, ' ') : 'Category'}
+        <Link href={`/collections/${Array.isArray(product.category_slug) ? product.category_slug[0] : (product.category_slug || 'all')}`} style={{ textDecoration: 'none', color: 'inherit', textTransform: 'capitalize' }}>
+          {product.category_slug 
+            ? (Array.isArray(product.category_slug) ? product.category_slug[0] : product.category_slug).replace(/-/g, ' ') 
+            : 'Category'}
         </Link>
         <span style={{ margin: '0 8px' }}>&gt;</span>
         <span style={{ color: 'var(--color-foreground)', fontWeight: '500' }}>{product.title}</span>

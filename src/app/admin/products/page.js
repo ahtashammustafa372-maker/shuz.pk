@@ -34,7 +34,10 @@ export default function AdminProducts() {
 
     if (!searchQuery) return true;
     const lowerQ = searchQuery.toLowerCase();
-    return p.title?.toLowerCase().includes(lowerQ) || p.vendor?.toLowerCase().includes(lowerQ) || p.category_slug?.toLowerCase().includes(lowerQ);
+    const catMatch = Array.isArray(p.category_slug)
+      ? p.category_slug.some(slug => slug.toLowerCase().includes(lowerQ))
+      : p.category_slug?.toLowerCase().includes(lowerQ);
+    return p.title?.toLowerCase().includes(lowerQ) || p.vendor?.toLowerCase().includes(lowerQ) || catMatch;
   });
   
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -51,8 +54,6 @@ export default function AdminProducts() {
     { slug: 't-shirts', name: 'T-shirts' },
     { slug: 'flash-sale', name: 'Flash Sale' }
   ]);
-  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
-  const [showNewCategoryInputEdit, setShowNewCategoryInputEdit] = useState(false);
 
   const combinedCategories = [];
   const addedSlugs = new Set();
@@ -65,12 +66,14 @@ export default function AdminProducts() {
   });
 
   products.forEach(p => {
-    const slug = p.category_slug;
-    if (slug && !addedSlugs.has(slug)) {
-      addedSlugs.add(slug);
-      const name = slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-      combinedCategories.push({ slug, name });
-    }
+    const slugs = Array.isArray(p.category_slug) ? p.category_slug : [p.category_slug].filter(Boolean);
+    slugs.forEach(slug => {
+      if (slug && !addedSlugs.has(slug)) {
+        addedSlugs.add(slug);
+        const name = slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        combinedCategories.push({ slug, name });
+      }
+    });
   });
 
   // Add Product Form State
@@ -78,7 +81,7 @@ export default function AdminProducts() {
   const [newPrice, setNewPrice] = useState('');
   const [newComparePrice, setNewComparePrice] = useState('');
   const [newVendor, setNewVendor] = useState('Generic');
-  const [newCategory, setNewCategory] = useState('sneakers');
+  const [newCategory, setNewCategory] = useState(['sneakers']);
   const [newStock, setNewStock] = useState('10');
   const [newDescription, setNewDescription] = useState('');
   const [newImages, setNewImages] = useState('');
@@ -229,7 +232,7 @@ export default function AdminProducts() {
 
       if (res.ok) {
         setShowAddProductModal(false);
-        setNewTitle(''); setNewPrice(''); setNewComparePrice(''); setNewVendor('Generic'); setNewStock('10'); setNewDescription(''); setNewSeo({ title: '', description: '', keywords: '', ogImage: '' }); setNewColors('Black, White'); setNewSizes('39, 40, 41, 42, 43, 44, 45'); setNewImages(''); setNewSizeStock({}); setNewStatus('active'); setNewArrival(false); setNewFeatured(false); setNewFlashSale(false);
+        setNewTitle(''); setNewPrice(''); setNewComparePrice(''); setNewVendor('Generic'); setNewCategory(['sneakers']); setNewStock('10'); setNewDescription(''); setNewSeo({ title: '', description: '', keywords: '', ogImage: '' }); setNewColors('Black, White'); setNewSizes('39, 40, 41, 42, 43, 44, 45'); setNewImages(''); setNewSizeStock({}); setNewStatus('active'); setNewArrival(false); setNewFeatured(false); setNewFlashSale(false);
         loadData();
       }
     } catch (err) {
@@ -455,7 +458,9 @@ export default function AdminProducts() {
                     <span style={{ marginLeft: '8px', fontSize: '11px', fontWeight: '600', padding: '2px 6px', borderRadius: '4px', backgroundColor: p.status === 'draft' ? '#fef3c7' : '#fee2e2', color: p.status === 'draft' ? '#d97706' : '#dc2626', textTransform: 'uppercase' }}>{p.status}</span>
                   )}
                 </td>
-                <td style={{ padding: '15px', fontSize: '14px', textTransform: 'capitalize' }}>{p.category_slug}</td>
+                 <td style={{ padding: '15px', fontSize: '14px', textTransform: 'capitalize' }}>
+                   {Array.isArray(p.category_slug) ? p.category_slug.join(', ') : p.category_slug}
+                 </td>
                 <td style={{ padding: '15px', fontSize: '14px', fontWeight: '500' }}>Rs. {p.price.toLocaleString()}</td>
                 <td style={{ padding: '15px', fontSize: '14px' }}>
                   <span style={{ fontWeight: '600', color: p.stock < 5 ? '#ef4444' : '#10b981' }}>{p.stock}</span>
@@ -518,23 +523,68 @@ export default function AdminProducts() {
                   <input type="text" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={newVendor} onChange={e => setNewVendor(e.target.value)} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Category *</label>
-                  <select style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={showNewCategoryInput ? '__NEW__' : newCategory} onChange={e => {
-                    if (e.target.value === '__NEW__') {
-                      setShowNewCategoryInput(true);
-                      setNewCategory('');
-                    } else {
-                      setShowNewCategoryInput(false);
-                      setNewCategory(e.target.value);
-                    }
-                  }}>
-                    <option value="" disabled>Select a category</option>
-                    {combinedCategories.map(cat => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
-                    <option value="__NEW__">+ Add New Category</option>
-                  </select>
-                  {showNewCategoryInput && (
-                    <input type="text" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px', marginTop: '10px' }} value={newCategory} onChange={e => setNewCategory(e.target.value)} placeholder="Enter new category name" />
-                  )}
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Categories *</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px', maxHeight: '150px', overflowY: 'auto' }}>
+                    {combinedCategories.map(cat => {
+                      const isChecked = newCategory.includes(cat.slug);
+                      return (
+                        <label key={cat.slug} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={e => {
+                              if (e.target.checked) {
+                                setNewCategory([...newCategory, cat.slug]);
+                              } else {
+                                setNewCategory(newCategory.filter(slug => slug !== cat.slug));
+                              }
+                            }}
+                          />
+                          {cat.name}
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                    <input
+                      type="text"
+                      placeholder="Add custom category..."
+                      id="new-cat-input-add"
+                      style={{ flex: 1, padding: '8px 12px', border: '1px solid #e4e4e7', borderRadius: '6px', fontSize: '13px' }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = e.target.value.trim();
+                          if (val) {
+                            const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            if (slug && !combinedCategories.some(c => c.slug === slug)) {
+                              setMenuCategories([...menuCategories, { slug, name: val }]);
+                              setNewCategory([...newCategory, slug]);
+                              e.target.value = '';
+                            }
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById('new-cat-input-add');
+                        const val = input.value.trim();
+                        if (val) {
+                          const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                          if (slug && !combinedCategories.some(c => c.slug === slug)) {
+                            setMenuCategories([...menuCategories, { slug, name: val }]);
+                            setNewCategory([...newCategory, slug]);
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      style={{ padding: '8px 14px', backgroundColor: '#000', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', fontWeight: '500' }}
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
@@ -637,23 +687,79 @@ export default function AdminProducts() {
                   <input type="text" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={editingProduct.vendor} onChange={e => setEditingProduct({...editingProduct, vendor: e.target.value})} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Category *</label>
-                  <select style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px' }} value={showNewCategoryInputEdit ? '__NEW__' : (editingProduct.category_slug || '')} onChange={e => {
-                    if (e.target.value === '__NEW__') {
-                      setShowNewCategoryInputEdit(true);
-                      setEditingProduct({...editingProduct, category_slug: ''});
-                    } else {
-                      setShowNewCategoryInputEdit(false);
-                      setEditingProduct({...editingProduct, category_slug: e.target.value});
-                    }
-                  }}>
-                    <option value="" disabled>Select a category</option>
-                    {combinedCategories.map(cat => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
-                    <option value="__NEW__">+ Add New Category</option>
-                  </select>
-                  {showNewCategoryInputEdit && (
-                    <input type="text" required style={{ width: '100%', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px', marginTop: '10px' }} value={editingProduct.category_slug} onChange={e => setEditingProduct({...editingProduct, category_slug: e.target.value})} placeholder="Enter new category name" />
-                  )}
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Categories *</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '10px', border: '1px solid #e4e4e7', borderRadius: '6px', maxHeight: '150px', overflowY: 'auto' }}>
+                    {combinedCategories.map(cat => {
+                      const editCategories = Array.isArray(editingProduct.category_slug)
+                        ? editingProduct.category_slug
+                        : (editingProduct.category_slug ? [editingProduct.category_slug] : []);
+                      const isChecked = editCategories.includes(cat.slug);
+                      return (
+                        <label key={cat.slug} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={e => {
+                              let updated;
+                              if (e.target.checked) {
+                                updated = [...editCategories, cat.slug];
+                              } else {
+                                updated = editCategories.filter(s => s !== cat.slug);
+                              }
+                              setEditingProduct({ ...editingProduct, category_slug: updated });
+                            }}
+                          />
+                          {cat.name}
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                    <input
+                      type="text"
+                      placeholder="Add custom category..."
+                      id="new-cat-input-edit"
+                      style={{ flex: 1, padding: '8px 12px', border: '1px solid #e4e4e7', borderRadius: '6px', fontSize: '13px' }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = e.target.value.trim();
+                          if (val) {
+                            const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            if (slug && !combinedCategories.some(c => c.slug === slug)) {
+                              setMenuCategories([...menuCategories, { slug, name: val }]);
+                              const editCategories = Array.isArray(editingProduct.category_slug)
+                                ? editingProduct.category_slug
+                                : (editingProduct.category_slug ? [editingProduct.category_slug] : []);
+                              setEditingProduct({ ...editingProduct, category_slug: [...editCategories, slug] });
+                              e.target.value = '';
+                            }
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById('new-cat-input-edit');
+                        const val = input.value.trim();
+                        if (val) {
+                          const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                          if (slug && !combinedCategories.some(c => c.slug === slug)) {
+                            setMenuCategories([...menuCategories, { slug, name: val }]);
+                            const editCategories = Array.isArray(editingProduct.category_slug)
+                              ? editingProduct.category_slug
+                              : (editingProduct.category_slug ? [editingProduct.category_slug] : []);
+                            setEditingProduct({ ...editingProduct, category_slug: [...editCategories, slug] });
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      style={{ padding: '8px 14px', backgroundColor: '#000', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', fontWeight: '500' }}
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
