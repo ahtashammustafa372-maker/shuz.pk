@@ -29,11 +29,14 @@ export default function CollectionPage() {
       case 'flip-flops': return 'Slides';
       case 'runners': return 'Runners';
       case 'caps': return 'Caps';
+      case 'men': return 'Men';
       case 'women': return 'Women';
       case 'new-arrival': return 'New Arrival';
       case 'major-loafers': return 'Major Loafers';
-      case 'oncloud': return 'On Cloud';
-      case 'aj-iv': return 'Air Jordan';
+      case 'oncloud':
+      case 'on-cloud': return 'On Cloud';
+      case 'aj-iv':
+      case 'air-jordan': return 'Air Jordan';
       case 't-shirts': return 'T-Shirts';
       case '12-12-sale': return 'Flash Sale';
       case 'all': return 'All Collections';
@@ -87,7 +90,9 @@ export default function CollectionPage() {
   // Collection Banners mapping
   const collectionBanners = {
     'oncloud': '/images/on_cloud_banner.png',
+    'on-cloud': '/images/on_cloud_banner.png',
     'aj-iv': '/images/aj1_banner.png',
+    'air-jordan': '/images/aj1_banner.png',
   };
 
   const currentBanner = collectionBanners[collectionSlug];

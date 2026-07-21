@@ -40,9 +40,38 @@ export default function AdminProducts() {
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
-  const uniqueCategories = Array.from(new Set(products.map(p => p.category_slug))).filter(Boolean);
+  const [menuCategories, setMenuCategories] = useState([
+    { slug: 'men', name: 'Men' },
+    { slug: 'women', name: 'Women' },
+    { slug: 'new-arrival', name: 'New Arrival' },
+    { slug: 'major-loafers', name: 'Major Loafers' },
+    { slug: 'on-cloud', name: 'On Cloud' },
+    { slug: 'runners', name: 'Runners' },
+    { slug: 'air-jordan', name: 'Air Jordan' },
+    { slug: 't-shirts', name: 'T-shirts' },
+    { slug: 'flash-sale', name: 'Flash Sale' }
+  ]);
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
   const [showNewCategoryInputEdit, setShowNewCategoryInputEdit] = useState(false);
+
+  const combinedCategories = [];
+  const addedSlugs = new Set();
+
+  menuCategories.forEach(cat => {
+    if (!addedSlugs.has(cat.slug)) {
+      addedSlugs.add(cat.slug);
+      combinedCategories.push({ slug: cat.slug, name: cat.name });
+    }
+  });
+
+  products.forEach(p => {
+    const slug = p.category_slug;
+    if (slug && !addedSlugs.has(slug)) {
+      addedSlugs.add(slug);
+      const name = slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      combinedCategories.push({ slug, name });
+    }
+  });
 
   // Add Product Form State
   const [newTitle, setNewTitle] = useState('');
@@ -112,6 +141,46 @@ export default function AdminProducts() {
       if (pRes.ok) {
         const pData = await pRes.json();
         setProducts(pData);
+      }
+
+      try {
+        const sRes = await fetch('/api/settings');
+        if (sRes.ok) {
+          const sData = await sRes.json();
+          const fallbackNavItems = [
+            { label: "Shop", url: "/collections/all" },
+            { label: "Men", url: "/collections/men" },
+            { label: "Women", url: "/collections/women" },
+            { label: "New Arrival", url: "/collections/new-arrival" },
+            { label: "Major Loafers", url: "/collections/major-loafers" },
+            { label: "On Cloud", url: "/collections/on-cloud" },
+            { label: "Runners", url: "/collections/runners" },
+            { label: "Air Jordan", url: "/collections/air-jordan" },
+            { label: "T-shirts", url: "/collections/t-shirts" },
+            { label: "Flash Sale", url: "/collections/flash-sale" }
+          ];
+          const headerMenus = (sData.headerMenus && sData.headerMenus.length > 2)
+            ? sData.headerMenus
+            : fallbackNavItems;
+
+          const parsedCats = [];
+          headerMenus.forEach(item => {
+            if (item.url && item.url.startsWith('/collections/')) {
+              const slug = item.url.replace('/collections/', '').trim();
+              if (slug && slug !== 'all') {
+                parsedCats.push({
+                  slug: slug,
+                  name: item.label
+                });
+              }
+            }
+          });
+          if (parsedCats.length > 0) {
+            setMenuCategories(parsedCats);
+          }
+        }
+      } catch (settingsErr) {
+        console.error("Failed to fetch header menus in products admin", settingsErr);
       }
     } catch (err) {
       console.error("Failed to load products", err);
@@ -460,7 +529,7 @@ export default function AdminProducts() {
                     }
                   }}>
                     <option value="" disabled>Select a category</option>
-                    {uniqueCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                    {combinedCategories.map(cat => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
                     <option value="__NEW__">+ Add New Category</option>
                   </select>
                   {showNewCategoryInput && (
@@ -579,7 +648,7 @@ export default function AdminProducts() {
                     }
                   }}>
                     <option value="" disabled>Select a category</option>
-                    {uniqueCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                    {combinedCategories.map(cat => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
                     <option value="__NEW__">+ Add New Category</option>
                   </select>
                   {showNewCategoryInputEdit && (

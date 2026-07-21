@@ -41,9 +41,11 @@ export async function GET(request) {
       } else if (collection === 'flash-sale') {
         query.$or = [{ flash_sale: true }, { category_slug: 'flash-sale' }];
       } else if (collection === 'men') {
-        // Return all
+        query.category_slug = 'men';
       } else if (collection === 'on-cloud-men' || collection === 'on-cloud' || collection === 'oncloud') {
-        query.category_slug = 'runners';
+        query.category_slug = { $in: ['on-cloud', 'oncloud'] };
+      } else if (collection === 'air-jordan' || collection === 'aj-iv' || collection === 'air  jorden') {
+        query.category_slug = { $in: ['air-jordan', 'aj-iv', 'air  jorden'] };
       } else {
         query.category_slug = collection;
       }
