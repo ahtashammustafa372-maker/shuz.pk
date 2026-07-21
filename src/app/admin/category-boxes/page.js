@@ -8,8 +8,8 @@ export default function CategoryBoxesAdmin() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
-  
   const [formData, setFormData] = useState({ name: '', link: '', image: '' });
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetch('/api/settings')
@@ -74,6 +74,37 @@ export default function CategoryBoxesAdmin() {
       const newBoxes = [...boxes];
       newBoxes.splice(index, 1);
       setBoxes(newBoxes);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    const uploadData = new FormData();
+    uploadData.append('files', files[0]);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.urls && data.urls.length > 0) {
+          setFormData(prev => ({ ...prev, image: data.urls[0] }));
+        }
+      } else {
+        alert('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Error uploading image');
+    } finally {
+      setIsUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -144,13 +175,27 @@ export default function CategoryBoxesAdmin() {
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>Image URL</label>
-              <input 
-                type="text" 
-                value={formData.image}
-                onChange={(e) => setFormData({...formData, image: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}
-                required
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <input 
+                  type="text" 
+                  value={formData.image}
+                  onChange={(e) => setFormData({...formData, image: e.target.value})}
+                  style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}
+                  required
+                  placeholder="Paste image URL here"
+                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '13px', color: '#666' }}>OR upload:</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileUpload} 
+                    disabled={isUploading} 
+                    style={{ fontSize: '13px' }} 
+                  />
+                  {isUploading && <span style={{ fontSize: '13px', color: '#3b82f6' }}>Uploading...</span>}
+                </div>
+              </div>
             </div>
             
             {formData.image && (
